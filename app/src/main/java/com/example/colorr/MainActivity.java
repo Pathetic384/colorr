@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -35,6 +36,9 @@ import java.util.concurrent.Executors;
 public class MainActivity extends AppCompatActivity {
 
     ProcessCameraProvider cameraProvider;
+    ColorSeekBar colorSeekBar;
+    ColorSeekBar filter;
+    TextView trans;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +46,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView trans = findViewById(R.id.trans);
+        trans = findViewById(R.id.trans);
 
-        ColorSeekBar colorSeekBar = findViewById(R.id.colorSeekBar);
-        colorSeekBar.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
+        colorSeekBar = findViewById(R.id.colorSeekBar);
+        filter = findViewById(R.id.filter);
+        filter.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
             @Override
             public void onColorChangeListener(int colorBarPosition, int alphaBarPosition, int color) {
-                trans.setBackgroundColor(ColorUtils.getTransparentColor(color, 0.5f));
+                trans.setBackgroundColor(ColorUtils.getTransparentColor(color, 0.3f));
             }
         });
 
@@ -90,8 +95,12 @@ public class MainActivity extends AppCompatActivity {
                 // Log to verify the analyzer is running
                 Log.d("CameraX", "Analyzer is running");
 
+                trans.setVisibility(View.INVISIBLE);
+
                 // Call the method to detect color at center
                 detectColorAtCenter(imageProxy);
+
+                trans.setVisibility(View.VISIBLE);
 
                 // Close the image once done
                 imageProxy.close();
@@ -152,6 +161,10 @@ public class MainActivity extends AppCompatActivity {
         // Convert to a color integer
         int color = Color.rgb(r, g, b);
 
+        int position = getColorSeekBarPositionFromHSV(color);
+
+        colorSeekBar.setColorBarPosition(100-position);
+
         // Get the color name using the custom method
         String colorName = ColorUtils.getColorName(color);
 
@@ -161,6 +174,41 @@ public class MainActivity extends AppCompatActivity {
 
 
         Log.d("ColorDetection", "Detected color: " + colorName);
+    }
+
+
+    // Convert the detected color to HSV
+// Convert RGB color to HSV
+    private float[] getHSVfromColor(int color) {
+        float[] hsv = new float[3];
+        Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsv);
+        return hsv;
+    }
+
+    // Determine if the color is neutral (grayscale-like)
+    private boolean isNeutralColor(float[] hsv) {
+        return hsv[1] < 0.15;  // Decreased threshold for neutral colors (greys, whites)
+    }
+
+    // Map the color to the ColorSeekBar position
+    private int getColorSeekBarPositionFromHSV(int color) {
+        float[] hsv = getHSVfromColor(color);
+
+        // Handle greys and neutrals based on their value (brightness)
+        if (isNeutralColor(hsv)) {
+            // Map neutral colors to the end of the bar based on brightness
+            if (hsv[2] >= 0.9) {
+                return 0;  // White or very light grey -> map to the end
+            } else if (hsv[2] < 0.1) {
+                return 0;    // Black -> map to the start
+            } else {
+                // Scale greys between 0 and 100 based on brightness (value)
+                return (int) (hsv[2] * 100);
+            }
+        }
+
+        // For colorful hues, use the hue component to map the color on the seekbar
+        return (int) ((hsv[0] / 360f) * 100);
     }
 
 }

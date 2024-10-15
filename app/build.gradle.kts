@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-    implementation("com.github.rtugeek:colorseekbar:1.7.5")
+    implementation("com.github.rtugeek:colorseekbar:1.7.7")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
