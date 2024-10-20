@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -37,8 +38,9 @@ public class MainActivity extends AppCompatActivity {
 
     ProcessCameraProvider cameraProvider;
     ColorSeekBar colorSeekBar;
-    ColorSeekBar filter;
-    TextView trans;
+
+    int currentBlindness = 0;
+    Button but1, but2, but3, but4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,17 +48,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        trans = findViewById(R.id.trans);
-
         colorSeekBar = findViewById(R.id.colorSeekBar);
-        filter = findViewById(R.id.filter);
-        filter.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
-            @Override
-            public void onColorChangeListener(int colorBarPosition, int alphaBarPosition, int color) {
-                trans.setBackgroundColor(ColorUtils.getTransparentColor(color, 0.3f));
-            }
-        });
+        but1 = findViewById(R.id.Protanopia);
+        but2 = findViewById(R.id.Deuteranopia);
+        but3 = findViewById(R.id.Tritanopia);
+        but4 = findViewById(R.id.Achromatopsia);
 
+        // Set up click listeners for each button
+        but1.setOnClickListener(v -> currentBlindness = 1);  // Protanopia
+        but2.setOnClickListener(v -> currentBlindness = 2);  // Deuteranopia
+        but3.setOnClickListener(v -> currentBlindness = 3);  // Tritanopia
+        but4.setOnClickListener(v -> currentBlindness = 4);  // Achromatopsia
 
         ProcessCameraProvider.getInstance(this);
         ListenableFuture<ProcessCameraProvider> cameraProviderListenableFuture = ProcessCameraProvider.getInstance(this);
@@ -95,12 +97,8 @@ public class MainActivity extends AppCompatActivity {
                 // Log to verify the analyzer is running
                 Log.d("CameraX", "Analyzer is running");
 
-                trans.setVisibility(View.INVISIBLE);
-
                 // Call the method to detect color at center
                 detectColorAtCenter(imageProxy);
-
-                trans.setVisibility(View.VISIBLE);
 
                 // Close the image once done
                 imageProxy.close();

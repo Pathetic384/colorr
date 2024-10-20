@@ -177,39 +177,6 @@ public class ColorUtils {
         return closestColorName != null ? closestColorName : "Unknown Color";
     }
 
-    public static int getTransparentColor(int color, float transparency) {
-        // Ensure the transparency is between 0.0 and 1.0 (0 = fully transparent, 1 = fully opaque)
-        if (transparency < 0.0f) transparency = 0.0f;
-        if (transparency > 1.0f) transparency = 1.0f;
-
-        // Extract the RGB components from the color
-        int red = Color.red(color);
-        int green = Color.green(color);
-        int blue = Color.blue(color);
-
-        // Calculate the alpha value based on the transparency (0-255)
-        int alpha = (int) (transparency * 255);
-
-        // Combine the alpha value with the RGB components to create a transparent color
-        return Color.argb(alpha, red, green, blue);
-    }
-
-     static float calculateBrightness(int color) {
-        int r = Color.red(color);
-        int g = Color.green(color);
-        int b = Color.blue(color);
-
-        // Use the brightness formula
-        return (r * 0.299f + g * 0.587f + b * 0.114f) / 255f;
-    }
-
-     public static int getColorSeekBarPosition(int color) {
-        float brightness = calculateBrightness(color);
-
-        // Since Red is at position 0% and Black is at 100%, we can just map brightness
-        // Brightness 1 -> Position 0%, Brightness 0 -> Position 100%
-        return (int) ((1 - brightness) * 100);  // Returns percentage position (0-100)
-    }
 }
 
 
