@@ -19,6 +19,12 @@
         android:layout_width="match_parent"
         android:layout_height="600dp" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:scaleType="centerCrop"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,6 +38,22 @@
         android:layout_height="100dp"
         android:layout_below="@id/pvPreview" >
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:srcCompat="@drawable/hsv" />
+
+        <it.mirko.rangeseekbar.RangeSeekBar
+            android:layout_margin="8dp"
+            android:id="@+id/rangeSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
@@ -39,46 +61,50 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="173dp"
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="30dp"
             android:text="TextView"
             android:textSize="20dp" />
 
-        <com.rtugeek.android.colorseekbar.ColorSeekBar
-            android:id="@+id/colorSeekBar"
-            android:layout_width="match_parent"
-            app:colorSeeds="@array/material_colors"
-            android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/Protanopia"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="55dp"
-            android:text="Prota" />
 
-        <Button
-            android:id="@+id/Deuteranopia"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="55dp"
-            android:layout_marginLeft="90dp"
-            android:text="Deuter" />
 
-        <Button
-            android:id="@+id/Tritanopia"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="55dp"
-            android:layout_marginLeft="190dp"
-            android:text="Trita" />
 
-        <Button
-            android:id="@+id/Achromatopsia"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="55dp"
-            android:layout_marginLeft="290dp"
-            android:text="Achro" />
+<!--        <com.rtugeek.android.colorseekbar.ColorSeekBar-->
+<!--            android:id="@+id/colorSeekBar"-->
+<!--            android:layout_width="match_parent"-->
+<!--            app:colorSeeds="@array/material_colors"-->
+<!--            android:layout_height="wrap_content" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/Protanopia"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="55dp"-->
+<!--            android:text="Prota" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/Deuteranopia"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="55dp"-->
+<!--            android:layout_marginLeft="90dp"-->
+<!--            android:text="Deuter" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/Tritanopia"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="55dp"-->
+<!--            android:layout_marginLeft="190dp"-->
+<!--            android:text="Trita" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/Achromatopsia"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="55dp"-->
+<!--            android:layout_marginLeft="290dp"-->
+<!--            android:text="Achro" />-->
 
 
     </RelativeLayout>
