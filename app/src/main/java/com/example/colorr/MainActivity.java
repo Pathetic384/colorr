@@ -1,5 +1,6 @@
 package com.example.colorr;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -67,6 +68,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Button test = findViewById(R.id.testy);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, TestView.class));
+            }
+        });
         overlayImageView = findViewById(R.id.imageView);
         rangeSeekBar = findViewById(R.id.rangeSeekBar);
         rangeSeekBar.setStartProgress(0);
