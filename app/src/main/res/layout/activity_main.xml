@@ -13,7 +13,7 @@
         android:layout_height="600dp" >
 
     </androidx.camera.view.PreviewView>
-    
+
     <TextView
         android:id="@+id/trans"
         android:layout_width="match_parent"
@@ -32,6 +32,35 @@
         android:textColor="@color/white"
         android:textSize="60sp"
         android:layout_marginTop="270dp"/>
+
+    <Button
+        android:id="@+id/shift"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Shift"
+        android:layout_marginTop="230dp" />
+
+    <Button
+        android:id="@+id/protanopia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="deuteranopia_filter"
+        android:layout_marginTop="110dp" />
+
+    <Button
+        android:id="@+id/deuteranopia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="deuteranopia_filter"
+        android:layout_marginTop="170dp" />
+
+    <Button
+        android:id="@+id/tritanopia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="tritanopia_filter"
+        android:layout_marginTop="50dp" />
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -66,6 +95,7 @@
             android:textSize="20dp" />
 
 
+
     <Button
         android:id="@+id/testy"
         android:layout_width="wrap_content"
@@ -74,42 +104,46 @@
         android:layout_marginTop="50dp" />
 
 
-<!--        <com.rtugeek.android.colorseekbar.ColorSeekBar-->
-<!--            android:id="@+id/colorSeekBar"-->
-<!--            android:layout_width="match_parent"-->
-<!--            app:colorSeeds="@array/material_colors"-->
-<!--            android:layout_height="wrap_content" />-->
 
-<!--        <Button-->
-<!--            android:id="@+id/Protanopia"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="55dp"-->
-<!--            android:text="Prota" />-->
 
-<!--        <Button-->
-<!--            android:id="@+id/Deuteranopia"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="55dp"-->
-<!--            android:layout_marginLeft="90dp"-->
-<!--            android:text="Deuter" />-->
 
-<!--        <Button-->
-<!--            android:id="@+id/Tritanopia"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="55dp"-->
-<!--            android:layout_marginLeft="190dp"-->
-<!--            android:text="Trita" />-->
 
-<!--        <Button-->
-<!--            android:id="@+id/Achromatopsia"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="55dp"-->
-<!--            android:layout_marginLeft="290dp"-->
-<!--            android:text="Achro" />-->
+        <!--        <com.rtugeek.android.colorseekbar.ColorSeekBar-->
+        <!--            android:id="@+id/colorSeekBar"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            app:colorSeeds="@array/material_colors"-->
+        <!--            android:layout_height="wrap_content" />-->
+
+        <!--        <Button-->
+        <!--            android:id="@+id/Protanopia"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="55dp"-->
+        <!--            android:text="Prota" />-->
+
+        <!--        <Button-->
+        <!--            android:id="@+id/Deuteranopia"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="55dp"-->
+        <!--            android:layout_marginLeft="90dp"-->
+        <!--            android:text="Deuter" />-->
+
+        <!--        <Button-->
+        <!--            android:id="@+id/Tritanopia"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="55dp"-->
+        <!--            android:layout_marginLeft="190dp"-->
+        <!--            android:text="Trita" />-->
+
+        <!--        <Button-->
+        <!--            android:id="@+id/Achromatopsia"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="55dp"-->
+        <!--            android:layout_marginLeft="290dp"-->
+        <!--            android:text="Achro" />-->
 
 
     </RelativeLayout>

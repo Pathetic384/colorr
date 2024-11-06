@@ -1,48 +1,36 @@
 package com.example.colorr;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.util.Log;
-import android.util.Size;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.core.AspectRatio;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.colorr.databinding.ActivityMainBinding;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.rtugeek.android.colorseekbar.ColorSeekBar;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import it.mirko.rangeseekbar.OnRangeSeekBarListener;
@@ -55,10 +43,8 @@ public class MainActivity extends AppCompatActivity {
     int str= 0;
     int ed = 360;
 
-  //  ColorSeekBar colorSeekBar;
+    int current_state = 0;
 
-  //  int currentBlindness = 0;
-  //  Button but1, but2, but3, but4;
 
     ImageView overlayImageView;
 
@@ -75,6 +61,65 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, TestView.class));
             }
         });
+
+        Button shift = findViewById(R.id.shift);
+        shift.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Clear any existing color filter before applying a new one
+                overlayImageView.clearColorFilter();
+
+                // Apply the selected colorblind enhancement based on `current_state`
+                switch (current_state) {
+                    case 1:
+                        applyColorBlindFilter(true, COLOR_MATRIX_ENHANCE_TRITANOPIA);
+                        break;
+                    case 2:
+                        applyColorBlindFilter(true, COLOR_MATRIX_ENHANCE_DEUTERANOPIA);
+                        break;
+                    case 3:
+                        applyColorBlindFilter(true, COLOR_MATRIX_ENHANCE_PROTANOPIA);
+                        break;
+                    default:
+                        Log.d("FilterApplication", "No filter applied; current_state is " + current_state);
+                        break;
+                }
+            }
+        });
+
+        // Define buttons and click listeners for each colorblind filter
+        // Set up button click listeners
+        Button tritanopia = findViewById(R.id.tritanopia);
+        tritanopia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                current_state = 1;
+                overlayImageView.clearColorFilter();
+                applyColorBlindFilter(true, COLOR_MATRIX_FILTER_TRITANOPIA);
+            }
+        });
+
+        Button deuteranopia = findViewById(R.id.deuteranopia);
+        deuteranopia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                current_state = 2;
+                overlayImageView.clearColorFilter();
+                applyColorBlindFilter(true, COLOR_MATRIX_FILTER_DEUTERANOPIA);
+            }
+        });
+
+
+        Button prota = findViewById(R.id.protanopia);
+        prota.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                current_state = 3;
+                overlayImageView.clearColorFilter();
+                applyColorBlindFilter(true, COLOR_MATRIX_FILTER_PROTANOPIA);
+            }
+        });
+
         overlayImageView = findViewById(R.id.imageView);
         rangeSeekBar = findViewById(R.id.rangeSeekBar);
         rangeSeekBar.setStartProgress(0);
@@ -90,18 +135,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-//        colorSeekBar = findViewById(R.id.colorSeekBar);
-//        but1 = findViewById(R.id.Protanopia);
-//        but2 = findViewById(R.id.Deuteranopia);
-//        but3 = findViewById(R.id.Tritanopia);
-//        but4 = findViewById(R.id.Achromatopsia);
-
-        // Set up click listeners for each button
-//        but1.setOnClickListener(v -> currentBlindness = 1);  // Protanopia
-//        but2.setOnClickListener(v -> currentBlindness = 2);  // Deuteranopia
-//        but3.setOnClickListener(v -> currentBlindness = 3);  // Tritanopia
-//        but4.setOnClickListener(v -> currentBlindness = 4);  // Achromatopsia
-
         ProcessCameraProvider.getInstance(this);
         ListenableFuture<ProcessCameraProvider> cameraProviderListenableFuture = ProcessCameraProvider.getInstance(this);
         cameraProviderListenableFuture.addListener(new Runnable() {
@@ -115,11 +148,69 @@ public class MainActivity extends AppCompatActivity {
                 } catch (ExecutionException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-
             }
         }, ContextCompat.getMainExecutor(this));
 
     }
+
+    private void applyColorBlindFilter(boolean apply, float[] colorMatrix) {
+        if (apply) {
+            // Clear any existing filter before applying the new one
+            overlayImageView.clearColorFilter();
+
+            ColorMatrix filterMatrix = new ColorMatrix(colorMatrix);
+            ColorMatrixColorFilter filter = new ColorMatrixColorFilter(filterMatrix);
+            overlayImageView.setColorFilter(filter);
+        } else {
+            overlayImageView.clearColorFilter();
+        }
+    }
+
+    private static final float[] COLOR_MATRIX_ENHANCE_PROTANOPIA = {
+            1.2f, -0.2f, 0.0f, 0, 0,
+            0.0f, 1.0f, 0.0f, 0, 0,
+            0.0f, -0.2f, 1.2f, 0, 0,
+            0.0f, 0.0f, 0.0f, 1, 0
+    };
+
+    private static final float[] COLOR_MATRIX_ENHANCE_DEUTERANOPIA = {
+            1.0f, 0.0f, 0.0f, 0, 0,
+            -0.2f, 1.2f, 0.0f, 0, 0,
+            0.0f, 0.0f, 1.0f, 0, 0,
+            0.0f, 0.0f, 0.0f, 1, 0
+    };
+
+    private static final float[] COLOR_MATRIX_ENHANCE_TRITANOPIA = {
+            1.0f, 0.0f, 0.0f, 0, 0,
+            0.0f, 1.0f, 0.0f, 0, 0,
+            -0.1f, 0.0f, 1.1f, 0, 0,
+            0.0f, 0.0f, 0.0f, 1, 0
+    };
+
+    private static final float[] COLOR_MATRIX_FILTER_PROTANOPIA = {
+            0.625f, 0.375f, 0.0f, 0, 0,
+            0.7f, 0.3f, 0.0f, 0, 0,
+            0.0f, 0.3f, 0.7f, 0, 0,
+            0.0f, 0.0f, 0.0f, 1, 0
+    };
+
+    // Color matrices for different colorblind filters
+    private static final float[] COLOR_MATRIX_FILTER_TRITANOPIA = {
+            0.95f, 0.05f, 0.0f, 0, 0,
+            0.0f, 0.433f, 0.567f, 0, 0,
+            0.0f, 0.475f, 0.525f, 0, 0,
+            0.0f, 0.0f, 0.0f, 1, 0
+    };
+
+    private static final float[] COLOR_MATRIX_FILTER_DEUTERANOPIA = {
+            0.567f, 0.433f, 0.0f, 0, 0,
+            0.558f, 0.442f, 0.0f, 0, 0,
+            0.0f, 0.242f, 0.758f, 0, 0,
+            0.0f, 0.0f, 0.0f, 1, 0
+    };
+
+
+
 
     private void startCameraX(ProcessCameraProvider cameraProvider) {
         CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
