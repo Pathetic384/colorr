@@ -7,8 +7,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,6 +21,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,17 +55,12 @@ import it.mirko.rangeseekbar.RangeSeekBar;
 
 public class MainActivity extends AppCompatActivity {
 
-    ProcessCameraProvider cameraProvider;
+    private GLSurfaceView glSurfaceView;
+    private CameraFilterRenderer cameraFilterRenderer;
+
     RangeSeekBar rangeSeekBar;
-    int str= 0;
+    int str = 0;
     int ed = 360;
-
-  //  ColorSeekBar colorSeekBar;
-
-  //  int currentBlindness = 0;
-  //  Button but1, but2, but3, but4;
-
-    ImageView overlayImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,137 +70,77 @@ public class MainActivity extends AppCompatActivity {
 
         Button test = findViewById(R.id.testy);
         test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, TestView.class));
-            }
+        @Override
+        public void onClick(View v) {
+            startActivity(new Intent(MainActivity.this, TestView.class));
+                }
         });
-        overlayImageView = findViewById(R.id.imageView);
+
+
         rangeSeekBar = findViewById(R.id.rangeSeekBar);
         rangeSeekBar.setStartProgress(0);
         rangeSeekBar.setEndProgress(360);
         rangeSeekBar.setMax(360);
         rangeSeekBar.setMinDifference(40);
+
+        glSurfaceView = findViewById(R.id.glSurfaceView);
+        glSurfaceView.bringToFront();
+        glSurfaceView.setZOrderOnTop(true); // Required to make the background transparent
+        glSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        glSurfaceView.setEGLContextClientVersion(2); // OpenGL ES 2.0
+        cameraFilterRenderer = new CameraFilterRenderer(this);
+        glSurfaceView.setRenderer(cameraFilterRenderer);
+
         rangeSeekBar.setOnRangeSeekBarListener(new OnRangeSeekBarListener() {
             @Override
             public void onRangeValues(RangeSeekBar rangeSeekBar, int start, int end) {
                 str = start;
                 ed = end;
+                cameraFilterRenderer.setHueRange(str, ed); // Pass hue range to renderer
             }
         });
 
+        TextView centerPlus = findViewById(R.id.centerPlus);
+        centerPlus.bringToFront();
+        glSurfaceView.setZOrderMediaOverlay(true);
+        centerPlus.setX(glSurfaceView.getWidth() / 2f - centerPlus.getWidth() / 2f);
+        centerPlus.setY(glSurfaceView.getHeight() / 2f - centerPlus.getHeight() / 2f);
 
-//        colorSeekBar = findViewById(R.id.colorSeekBar);
-//        but1 = findViewById(R.id.Protanopia);
-//        but2 = findViewById(R.id.Deuteranopia);
-//        but3 = findViewById(R.id.Tritanopia);
-//        but4 = findViewById(R.id.Achromatopsia);
-
-        // Set up click listeners for each button
-//        but1.setOnClickListener(v -> currentBlindness = 1);  // Protanopia
-//        but2.setOnClickListener(v -> currentBlindness = 2);  // Deuteranopia
-//        but3.setOnClickListener(v -> currentBlindness = 3);  // Tritanopia
-//        but4.setOnClickListener(v -> currentBlindness = 4);  // Achromatopsia
-
-        ProcessCameraProvider.getInstance(this);
-        ListenableFuture<ProcessCameraProvider> cameraProviderListenableFuture = ProcessCameraProvider.getInstance(this);
-        cameraProviderListenableFuture.addListener(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    cameraProvider = cameraProviderListenableFuture.get();
-
-                    startCameraX(cameraProvider);
-
-                } catch (ExecutionException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-        }, ContextCompat.getMainExecutor(this));
+        startCameraX();
 
     }
 
-    private void startCameraX(ProcessCameraProvider cameraProvider) {
-        CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
+    private void startCameraX() {
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+        cameraProviderFuture.addListener(() -> {
+            try {
+                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                bindCamera(cameraProvider);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, ContextCompat.getMainExecutor(this));
+    }
 
+    private void bindCamera(ProcessCameraProvider cameraProvider) {
+        CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
         Preview preview = new Preview.Builder().build();
         PreviewView pv = findViewById(R.id.pvPreview);
         preview.setSurfaceProvider(pv.getSurfaceProvider());
 
-        // Initialize ImageAnalysis with original resolution to avoid zoom
         ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build();
 
-// Process every 4th frame to reduce lag
-        AtomicInteger frameCounter = new AtomicInteger();
-
         imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(this), imageProxy -> {
-            if (frameCounter.getAndIncrement() % 3 == 0) {  // Skip frames to improve performance
-                Bitmap bitmap = imageProxyToBitmap(imageProxy);
-
-                // Scale down bitmap resolution by a factor of 4
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap,
-                        bitmap.getWidth() / 2,
-                        bitmap.getHeight() / 2, true);
-
-                // Perform color processing on the scaled down bitmap
-                Bitmap filteredBitmap = applyColorFilter(scaledBitmap);
-
-                // Display scaled and filtered bitmap on ImageView
-                runOnUiThread(() -> overlayImageView.setImageBitmap(filteredBitmap));
-            }
+            Bitmap bitmap = imageProxyToBitmap(imageProxy);
+            cameraFilterRenderer.setCameraFrame(bitmap);
             detectColorAtCenter(imageProxy);
             imageProxy.close();
         });
 
-        try {
-            cameraProvider.unbindAll(); // Unbind previous use cases
-
-            // Bind both the Preview and ImageAnalysis together
-            cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalysis);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private int convertToGrayscale(int r, int g, int b) {
-        int gray = (int) (0.3 * r + 0.59 * g + 0.11 * b);
-        return Color.rgb(gray, gray, gray);
-    }
-
-    private boolean isColorInRange(int r, int g, int b) {
-        float[] hsv = new float[3];
-        Color.RGBToHSV(r, g, b, hsv);
-
-        // Define the green color range in terms of hue (approx. 85-160 degrees)
-        return hsv[0] >= str && hsv[0] <= ed;
-    }
-
-    private Bitmap applyColorFilter(Bitmap bitmap) {
-        Bitmap filteredBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
-
-        for (int y = 0; y < bitmap.getHeight(); y++) {
-            for (int x = 0; x < bitmap.getWidth(); x++) {
-                int pixel = bitmap.getPixel(x, y);
-                int r = Color.red(pixel);
-                int g = Color.green(pixel);
-                int b = Color.blue(pixel);
-
-                if (isColorInRange(r, g, b)) {
-                    // If the color is in the green range, keep it unchanged
-                    filteredBitmap.setPixel(x, y, Color.rgb(r, g, b));
-                } else {
-                    // Convert the pixel to grayscale
-                    int grayscale = convertToGrayscale(r, g, b);
-                    filteredBitmap.setPixel(x, y, grayscale);
-                }
-            }
-        }
-
-        return filteredBitmap;
+        cameraProvider.unbindAll();
+        cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalysis);
     }
 
     private Bitmap imageProxyToBitmap(ImageProxy image) {
@@ -281,60 +221,18 @@ public class MainActivity extends AppCompatActivity {
         // Convert to a color integer
         int color = Color.rgb(r, g, b);
 
-        //int position = getColorSeekBarPositionFromHSV(color);
-
-        //colorSeekBar.setColorBarPosition(100-position);
-
         // Get the color name using the custom method
         String colorName = ColorUtils.getColorName(color);
 
         // Display the color name in the TextView
         TextView tv = findViewById(R.id.textView);
+        tv.bringToFront();
+
         tv.setText(colorName);
 
 
         Log.d("ColorDetection", "Detected color: " + colorName);
     }
 
-
-
-
-
-
-
-
-//    // Convert the detected color to HSV
-//// Convert RGB color to HSV
-//    private float[] getHSVfromColor(int color) {
-//        float[] hsv = new float[3];
-//        Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsv);
-//        return hsv;
-//    }
-//
-//    // Determine if the color is neutral (grayscale-like)
-//    private boolean isNeutralColor(float[] hsv) {
-//        return hsv[1] < 0.15;  // Decreased threshold for neutral colors (greys, whites)
-//    }
-//
-//    // Map the color to the ColorSeekBar position
-//    private int getColorSeekBarPositionFromHSV(int color) {
-//        float[] hsv = getHSVfromColor(color);
-//
-//        // Handle greys and neutrals based on their value (brightness)
-//        if (isNeutralColor(hsv)) {
-//            // Map neutral colors to the end of the bar based on brightness
-//            if (hsv[2] >= 0.9) {
-//                return 0;  // White or very light grey -> map to the end
-//            } else if (hsv[2] < 0.1) {
-//                return 0;    // Black -> map to the start
-//            } else {
-//                // Scale greys between 0 and 100 based on brightness (value)
-//                return (int) (hsv[2] * 100);
-//            }
-//        }
-//
-//        // For colorful hues, use the hue component to map the color on the seekbar
-//        return (int) ((hsv[0] / 360f) * 100);
-//    }
 
 }
