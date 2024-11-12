@@ -71,6 +71,15 @@
         android:layout_marginTop="50dp" />
 
 
+        <ToggleButton
+            android:id="@+id/toggleOverlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOn="Overlay ON"
+            android:textOff="Overlay OFF"
+            android:layout_marginLeft="280dp"
+            android:layout_marginTop="50dp"/>
+
     </RelativeLayout>
 
 

@@ -10,17 +10,23 @@ import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.Size;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -58,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
     private GLSurfaceView glSurfaceView;
     private CameraFilterRenderer cameraFilterRenderer;
 
+    private static final int REQUEST_CODE_OVERLAY_PERMISSION = 1;
+    private boolean overlayEnabled = false;
+    private boolean overlayRunning = false;
     RangeSeekBar rangeSeekBar;
     int str = 0;
     int ed = 360;
@@ -76,6 +85,26 @@ public class MainActivity extends AppCompatActivity {
                 }
         });
 
+
+        // Check and request overlay permission
+        if (Settings.canDrawOverlays(this)) {
+            startOverlayService();
+        } else {
+            requestOverlayPermission();
+        }
+
+        ToggleButton toggleOverlay = findViewById(R.id.toggleOverlay);
+        toggleOverlay.setChecked(false);  // Ensure it starts in the off state
+
+        toggleOverlay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                overlayEnabled = isChecked;
+                if (!overlayEnabled && overlayRunning) {
+                    stopOverlayService();  // Stop overlay if it was running
+                }
+            }
+        });
 
         rangeSeekBar = findViewById(R.id.rangeSeekBar);
         rangeSeekBar.setStartProgress(0);
@@ -109,6 +138,69 @@ public class MainActivity extends AppCompatActivity {
         startCameraX();
 
     }
+
+    private void checkOverlayPermission() {
+        if (Settings.canDrawOverlays(this)) {
+            if (overlayEnabled && !overlayRunning) {
+                startOverlayService();
+            }
+        } else {
+            requestOverlayPermission();
+        }
+    }
+
+    private void requestOverlayPermission() {
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + getPackageName()));
+        startActivityForResult(intent, REQUEST_CODE_OVERLAY_PERMISSION);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_OVERLAY_PERMISSION) {
+            if (Settings.canDrawOverlays(this) && overlayEnabled && !overlayRunning) {
+                startOverlayService();
+            }
+        }
+    }
+
+    private void startOverlayService() {
+        Intent serviceIntent = new Intent(this, OverlayService.class);
+        startService(serviceIntent);
+        overlayRunning = true;
+    }
+
+    private void stopOverlayService() {
+        Intent serviceIntent = new Intent(this, OverlayService.class);
+        stopService(serviceIntent);
+        overlayRunning = false;
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        if (overlayEnabled && !overlayRunning) {
+            checkOverlayPermission();  // Start overlay if leaving the app and overlay is enabled
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (overlayRunning) {
+            stopOverlayService();  // Stop overlay when returning to the app
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopOverlayService();  // Ensure the overlay stops when the app is destroyed
+    }
+
+
+
 
     private void startCameraX() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
