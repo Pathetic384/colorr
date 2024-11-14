@@ -14,11 +14,18 @@
 
     </androidx.camera.view.PreviewView>
 
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="600dp"
+    android:id="@+id/root">
+<!--    android:layout_marginTop="250dp">-->
+
 
     <android.opengl.GLSurfaceView
         android:id="@+id/glSurfaceView"
         android:layout_width="match_parent"
-        android:layout_height="600dp" />
+        android:layout_height="match_parent" />
+</RelativeLayout>
 
     <TextView
         android:id="@+id/centerPlus"

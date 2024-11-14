@@ -22,6 +22,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.Size;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -60,16 +61,19 @@ import it.mirko.rangeseekbar.OnRangeSeekBarListener;
 import it.mirko.rangeseekbar.RangeSeekBar;
 
 public class MainActivity extends AppCompatActivity {
-
-    private GLSurfaceView glSurfaceView;
-    private CameraFilterRenderer cameraFilterRenderer;
-
+    //overlay
     private static final int REQUEST_CODE_OVERLAY_PERMISSION = 1;
     private boolean overlayEnabled = false;
     private boolean overlayRunning = false;
+    private boolean isSwitchingActivities = false;
     RangeSeekBar rangeSeekBar;
     int str = 0;
     int ed = 360;
+    TextView centerPlus;
+
+    private GLSurfaceView glSurfaceView;
+    private CameraFilterRenderer cameraFilterRenderer;
+    private ProcessCameraProvider cameraProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +81,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         Button test = findViewById(R.id.testy);
         test.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            isSwitchingActivities = true;
             startActivity(new Intent(MainActivity.this, TestView.class));
                 }
         });
-
 
         // Check and request overlay permission
         if (Settings.canDrawOverlays(this)) {
@@ -92,10 +97,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             requestOverlayPermission();
         }
-
         ToggleButton toggleOverlay = findViewById(R.id.toggleOverlay);
         toggleOverlay.setChecked(false);  // Ensure it starts in the off state
-
         toggleOverlay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -105,21 +108,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
         rangeSeekBar = findViewById(R.id.rangeSeekBar);
         rangeSeekBar.setStartProgress(0);
         rangeSeekBar.setEndProgress(360);
         rangeSeekBar.setMax(360);
         rangeSeekBar.setMinDifference(40);
-
-        glSurfaceView = findViewById(R.id.glSurfaceView);
-        glSurfaceView.bringToFront();
-        glSurfaceView.setZOrderOnTop(true); // Required to make the background transparent
-        glSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        glSurfaceView.setEGLContextClientVersion(2); // OpenGL ES 2.0
-        cameraFilterRenderer = new CameraFilterRenderer(this);
-        glSurfaceView.setRenderer(cameraFilterRenderer);
-
         rangeSeekBar.setOnRangeSeekBarListener(new OnRangeSeekBarListener() {
             @Override
             public void onRangeValues(RangeSeekBar rangeSeekBar, int start, int end) {
@@ -129,13 +122,34 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        TextView centerPlus = findViewById(R.id.centerPlus);
+
+        // Initialize GLSurfaceView and set renderer
+        glSurfaceView = findViewById(R.id.glSurfaceView);
+        glSurfaceView.setEGLContextClientVersion(2);
+        glSurfaceView.setPreserveEGLContextOnPause(true); // Keep EGL context on pause
+        glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+
+        // Initialize the renderer
+        cameraFilterRenderer = new CameraFilterRenderer(this);
+        glSurfaceView.setRenderer(cameraFilterRenderer);
+        glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+
+        // Bring glSurfaceView to the front
+        glSurfaceView.setZOrderOnTop(true); // This ensures GLSurfaceView is on top
+        glSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        glSurfaceView.bringToFront();
+
+        // Start CameraX after the renderer is initialized
+        startCameraX();
+
+
+
+        centerPlus = findViewById(R.id.centerPlus);
         centerPlus.bringToFront();
         glSurfaceView.setZOrderMediaOverlay(true);
         centerPlus.setX(glSurfaceView.getWidth() / 2f - centerPlus.getWidth() / 2f);
         centerPlus.setY(glSurfaceView.getHeight() / 2f - centerPlus.getHeight() / 2f);
 
-        startCameraX();
 
     }
 
@@ -180,18 +194,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
-        if (overlayEnabled && !overlayRunning) {
+        if (!isSwitchingActivities && overlayEnabled && !overlayRunning) {
             checkOverlayPermission();  // Start overlay if leaving the app and overlay is enabled
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (overlayRunning) {
-            stopOverlayService();  // Stop overlay when returning to the app
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -199,6 +206,67 @@ public class MainActivity extends AppCompatActivity {
         stopOverlayService();  // Ensure the overlay stops when the app is destroyed
     }
 
+    private Handler resumeHandler = new Handler();
+    private Runnable resumeRunnable = this::initializeGLSurfaceView;
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Detach GLSurfaceView and release resources
+        if (glSurfaceView != null) {
+            glSurfaceView.onPause();
+            ((ViewGroup) glSurfaceView.getParent()).removeView(glSurfaceView);
+            glSurfaceView = null;
+        }
+
+//        // Cancel any pending reinitialization tasks
+//        resumeHandler.removeCallbacks(resumeRunnable);
+//        stopOverlayService();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isSwitchingActivities = false;
+        if (overlayRunning) {
+            stopOverlayService();  // Stop overlay when returning to the app
+        }
+        // Delay GLSurfaceView reinitialization to allow time for resources to be cleaned up
+        resumeHandler.postDelayed(resumeRunnable, 300); // Adjust delay if necessary
+        if (glSurfaceView != null) {
+            glSurfaceView.requestRender();
+        }
+    }
+
+    private void initializeGLSurfaceView() {
+        if (glSurfaceView == null) {
+            // Create a new instance of GLSurfaceView only if it does not already exist
+            glSurfaceView = new GLSurfaceView(this);
+            glSurfaceView.setZOrderOnTop(true);
+            glSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+            glSurfaceView.setEGLContextClientVersion(2);
+            glSurfaceView.setPreserveEGLContextOnPause(true);
+            glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+
+            // Set the renderer only once
+            cameraFilterRenderer = new CameraFilterRenderer(this);
+            glSurfaceView.setRenderer(cameraFilterRenderer);
+            glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+
+            ViewGroup rootView = findViewById(R.id.root);
+            rootView.addView(glSurfaceView);
+            glSurfaceView.onResume();  // Resume GLSurfaceView
+        } else {
+            // Only resume and request render if GLSurfaceView already exists
+            glSurfaceView.onResume();
+            glSurfaceView.requestRender();
+        }
+        centerPlus.bringToFront();
+        glSurfaceView.setZOrderMediaOverlay(true);
+        // Restart CameraX if necessary
+        startCameraX();
+    }
 
 
 
@@ -206,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
         cameraProviderFuture.addListener(() -> {
             try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                cameraProvider = cameraProviderFuture.get();
                 bindCamera(cameraProvider);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -226,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
 
         imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(this), imageProxy -> {
             Bitmap bitmap = imageProxyToBitmap(imageProxy);
-            cameraFilterRenderer.setCameraFrame(bitmap);
+            cameraFilterRenderer.setCameraFrame(bitmap, glSurfaceView);
             detectColorAtCenter(imageProxy);
             imageProxy.close();
         });

@@ -19,11 +19,17 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class CameraFilterRenderer implements GLSurfaceView.Renderer {
     private final Context context;
-    private int shaderProgram;
-    private int textureId;
+    private int shaderProgram = 0;
+    private int textureId = 0;
     private Bitmap cameraFrame;
+    private boolean textureLoaded = false;  // Flag to track texture loading
     private float minHue = 0.0f;
     private float maxHue = 360.0f;
+
+    private boolean isInitialized = false;
+
+    private FloatBuffer vertexBuffer;
+    private FloatBuffer texCoordBuffer;
 
     private final float[] squareCoords = {
             -1.0f,  1.0f,   // Top left
@@ -39,7 +45,6 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
             1.0f, 1.0f      // Bottom right
     };
 
-
     public CameraFilterRenderer(Context context) {
         this.context = context;
     }
@@ -49,33 +54,59 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
         this.maxHue = maxHue;
     }
 
-    public void setCameraFrame(Bitmap frame) {
+    public void setCameraFrame(Bitmap frame, GLSurfaceView glSurfaceView) {
         this.cameraFrame = frame;
+        textureLoaded = false;
+
+        // Request render only after setting a new frame
+        if (glSurfaceView != null) {
+            glSurfaceView.requestRender();
+        }
     }
+
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        shaderProgram = createShaderProgram(vertexShaderCode, fragmentShaderCode);
+        if (!isInitialized) {
+            shaderProgram = createShaderProgram(vertexShaderCode, fragmentShaderCode);
+            GLES20.glUseProgram(shaderProgram);
+
+            int[] textures = new int[1];
+            GLES20.glGenTextures(1, textures, 0);
+            textureId = textures[0];
+
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+
+            // Prepare position and texture coordinate buffers only once
+            vertexBuffer = ByteBuffer.allocateDirect(squareCoords.length * 4)
+                    .order(ByteOrder.nativeOrder())
+                    .asFloatBuffer();
+            vertexBuffer.put(squareCoords).position(0);
+
+            texCoordBuffer = ByteBuffer.allocateDirect(texCoords.length * 4)
+                    .order(ByteOrder.nativeOrder())
+                    .asFloatBuffer();
+            texCoordBuffer.put(texCoords).position(0);
+
+            textureLoaded = false;  // Ensure texture reload on surface recreation
+            isInitialized = true;
+        }
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        GLES20.glViewport(0, 0, width, height);
+    }
+
+    @Override
+    public void onDrawFrame(GL10 gl) {
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
         GLES20.glUseProgram(shaderProgram);
-
-        int[] textures = new int[1];
-        GLES20.glGenTextures(1, textures, 0);
-        textureId = textures[0];
-
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-
-        // Prepare position and texture coordinate buffers
-        FloatBuffer vertexBuffer = ByteBuffer.allocateDirect(squareCoords.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        vertexBuffer.put(squareCoords).position(0);
-
-        FloatBuffer texCoordBuffer = ByteBuffer.allocateDirect(texCoords.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        texCoordBuffer.put(texCoords).position(0);
+        GLES20.glUniform1f(GLES20.glGetUniformLocation(shaderProgram, "minHue"), minHue);
+        GLES20.glUniform1f(GLES20.glGetUniformLocation(shaderProgram, "maxHue"), maxHue);
 
         int positionHandle = GLES20.glGetAttribLocation(shaderProgram, "position");
         GLES20.glEnableVertexAttribArray(positionHandle);
@@ -84,33 +115,27 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
         int texCoordHandle = GLES20.glGetAttribLocation(shaderProgram, "texCoord");
         GLES20.glEnableVertexAttribArray(texCoordHandle);
         GLES20.glVertexAttribPointer(texCoordHandle, 2, GLES20.GL_FLOAT, false, 0, texCoordBuffer);
-    }
 
-
-    @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-
-    }
-
-    @Override
-    public void onDrawFrame(GL10 gl) {
-        GLES20.glUseProgram(shaderProgram);
-
-        // Set the hue range uniforms
-        GLES20.glUniform1f(GLES20.glGetUniformLocation(shaderProgram, "minHue"), minHue);
-        GLES20.glUniform1f(GLES20.glGetUniformLocation(shaderProgram, "maxHue"), maxHue);
-
-        if (cameraFrame != null) {
+        if (cameraFrame != null && !textureLoaded) {
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, cameraFrame, 0);
-            cameraFrame = null; // Clear frame after updating
+            textureLoaded = true;
         }
 
-        // Draw the frame with the updated texture
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+
+        GLES20.glDisableVertexAttribArray(positionHandle);
+        GLES20.glDisableVertexAttribArray(texCoordHandle);
     }
 
 
+    public void release() {
+        if (isInitialized) {
+            GLES20.glDeleteTextures(1, new int[]{textureId}, 0);
+            GLES20.glDeleteProgram(shaderProgram);
+            isInitialized = false;
+        }
+    }
 
     private int createShaderProgram(String vertexCode, String fragmentCode) {
         int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexCode);
@@ -138,7 +163,6 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
                     "  vTexCoord = texCoord;" +
                     "}";
 
-
     private final String fragmentShaderCode =
             "precision mediump float;" +
                     "uniform sampler2D texture;" +
@@ -165,5 +189,4 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
                     "    gl_FragColor = vec4(vec3(gray), color.a);" +
                     "  }" +
                     "}";
-
 }
