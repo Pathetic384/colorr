@@ -1,11 +1,17 @@
 package com.example.colorr;// OverlayService.java
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.os.IBinder;
 import android.view.View;
 import android.view.WindowManager;
+
+import androidx.core.app.NotificationCompat;
 
 public class OverlayService extends Service {
 
@@ -42,8 +48,7 @@ public class OverlayService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Keep the service running until explicitly stopped
-        return START_STICKY;
+        return Service.START_REDELIVER_INTENT; // Ensures the service restarts if killed
     }
 
     @Override
