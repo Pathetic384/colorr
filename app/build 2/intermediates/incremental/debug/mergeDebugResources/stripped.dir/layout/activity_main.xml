@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/pvPreview"
+        android:layout_width="match_parent"
+        android:layout_height="600dp" >
+
+    </androidx.camera.view.PreviewView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:id="@+id/root">
+        <!--    android:layout_marginTop="250dp">-->
+
+
+        <android.opengl.GLSurfaceView
+            android:id="@+id/glSurfaceView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/centerPlus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="             +"
+        android:textColor="@color/white"
+        android:textSize="60sp"
+        android:layout_marginTop="270dp" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@id/pvPreview" >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:srcCompat="@drawable/hsv" />
+
+        <it.mirko.rangeseekbar.RangeSeekBar
+            android:layout_margin="8dp"
+            android:id="@+id/rangeSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="173dp"
+            android:layout_marginBottom="30dp"
+            android:text="TextView"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/tritanopiaButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tritanopia"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"/>
+
+        <Button
+            android:id="@+id/deuteranopiaButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Deuteranopia"
+            android:layout_toEndOf="@id/tritanopiaButton"
+            android:layout_marginTop="10dp"/>
+
+        <Button
+            android:id="@+id/propanopiaButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Protanopia"
+            android:layout_toEndOf="@id/deuteranopiaButton"
+            android:layout_marginTop="10dp"/>
+
+
+        <Button
+            android:id="@+id/testy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="testy"
+            android:layout_marginTop="50dp" />
+
+
+        <ToggleButton
+            android:id="@+id/toggleOverlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOn="Overlay ON"
+            android:textOff="Overlay OFF"
+            android:layout_marginLeft="280dp"
+            android:layout_marginTop="50dp"/>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
+
+

@@ -2,13 +2,10 @@ package com.example.colorr;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.SurfaceTexture;
-import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
-import android.util.AttributeSet;
-import android.view.Surface;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -22,11 +19,11 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
     private int shaderProgram = 0;
     private int textureId = 0;
     private Bitmap cameraFrame;
-    private boolean textureLoaded = false;  // Flag to track texture loading
-    private float minHue = 0.0f;
-    private float maxHue = 360.0f;
+    private boolean isTritanopiaEnabled = false;
 
-    private boolean isInitialized = false;
+    private boolean isDeuteranopiaEnabled = false;
+
+    private boolean isPropanopiaEnabled = false;
 
     private FloatBuffer vertexBuffer;
     private FloatBuffer texCoordBuffer;
@@ -45,54 +42,97 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
             1.0f, 1.0f      // Bottom right
     };
 
-    public CameraFilterRenderer(Context context) {
-        this.context = context;
+    private final float[] tritanopiaMatrix = {
+            0.95f,  0.05f,  0.0f,
+            0.0f,   0.433f, 0.567f,
+            0.0f,   0.475f, 0.525f
+    };
+
+    private final float[] protanopiaMatrix = {
+            0.567f,  0.433f,  0.0f,   // Red
+            0.558f,  0.442f,  0.0f,   // Green
+            0.0f,    0.242f,  0.758f  // Blue
+    };
+
+    private final float[] deuteranopiaMatrix = {
+            0.625f,  0.375f,  0.0f,   // Red
+            0.7f,    0.3f,    0.0f,   // Green
+            0.0f,    0.3f,    0.7f    // Blue
+    };
+
+    public boolean isPropanopiaEnabled() {
+        return isPropanopiaEnabled;
     }
 
+    public boolean isDeuteranopiaEnabled() {
+        return isDeuteranopiaEnabled;
+    }
+
+
+
+    public CameraFilterRenderer(Context context) {
+        this.context = context;
+
+        // Initialize buffers
+        vertexBuffer = ByteBuffer.allocateDirect(squareCoords.length * 4)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        vertexBuffer.put(squareCoords).position(0);
+
+        texCoordBuffer = ByteBuffer.allocateDirect(texCoords.length * 4)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        texCoordBuffer.put(texCoords).position(0);
+    }
+
+    public void setTritanopiaMode(boolean enabled) {
+        this.isTritanopiaEnabled = enabled;
+        Log.d("CameraFilterRenderer", "Tritanopia mode set to: " + enabled);
+    }
+
+    public void setDeuteranopiaMode(boolean enabled) {
+        this.isDeuteranopiaEnabled = enabled;
+        Log.d("CameraFilterRenderer", "Deuteranopia mode set to: " + enabled);
+    }
+
+    public void setProtanopiaMode(boolean enabled) {
+        this.isPropanopiaEnabled = enabled;
+        Log.d("CameraFilterRenderer", "Protanopia mode set to: " + enabled);
+
+    }
+
+
     public void setHueRange(float minHue, float maxHue) {
-        this.minHue = minHue;
-        this.maxHue = maxHue;
+        // Implement if needed
     }
 
     public void setCameraFrame(Bitmap frame, GLSurfaceView glSurfaceView) {
+        if (cameraFrame != null) {
+            cameraFrame.recycle();
+        }
         this.cameraFrame = frame;
-        textureLoaded = false;
-
-        // Request render only after setting a new frame
         if (glSurfaceView != null) {
             glSurfaceView.requestRender();
         }
     }
 
-
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        if (!isInitialized) {
-            shaderProgram = createShaderProgram(vertexShaderCode, fragmentShaderCode);
-            GLES20.glUseProgram(shaderProgram);
+        // Compile and link shaders
+        shaderProgram = createShaderProgram(getVertexShaderCode(), getFragmentShaderCode());
 
-            int[] textures = new int[1];
-            GLES20.glGenTextures(1, textures, 0);
-            textureId = textures[0];
+        // Use the shader program before setting uniforms
+        GLES20.glUseProgram(shaderProgram);
 
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        // Assign the sampler to texture unit 0
+        int textureUniform = GLES20.glGetUniformLocation(shaderProgram, "texture");
+        GLES20.glUniform1i(textureUniform, 0); // GL_TEXTURE0
 
-            // Prepare position and texture coordinate buffers only once
-            vertexBuffer = ByteBuffer.allocateDirect(squareCoords.length * 4)
-                    .order(ByteOrder.nativeOrder())
-                    .asFloatBuffer();
-            vertexBuffer.put(squareCoords).position(0);
-
-            texCoordBuffer = ByteBuffer.allocateDirect(texCoords.length * 4)
-                    .order(ByteOrder.nativeOrder())
-                    .asFloatBuffer();
-            texCoordBuffer.put(texCoords).position(0);
-
-            textureLoaded = false;  // Ensure texture reload on surface recreation
-            isInitialized = true;
-        }
+        // Generate and configure texture
+        int[] textures = new int[1];
+        GLES20.glGenTextures(1, textures, 0);
+        textureId = textures[0];
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
     }
 
     @Override
@@ -103,90 +143,146 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
         GLES20.glUseProgram(shaderProgram);
-        GLES20.glUniform1f(GLES20.glGetUniformLocation(shaderProgram, "minHue"), minHue);
-        GLES20.glUniform1f(GLES20.glGetUniformLocation(shaderProgram, "maxHue"), maxHue);
 
+        // Pass vertex data
         int positionHandle = GLES20.glGetAttribLocation(shaderProgram, "position");
         GLES20.glEnableVertexAttribArray(positionHandle);
         GLES20.glVertexAttribPointer(positionHandle, 2, GLES20.GL_FLOAT, false, 0, vertexBuffer);
 
+        // Pass texture coordinate data
         int texCoordHandle = GLES20.glGetAttribLocation(shaderProgram, "texCoord");
         GLES20.glEnableVertexAttribArray(texCoordHandle);
         GLES20.glVertexAttribPointer(texCoordHandle, 2, GLES20.GL_FLOAT, false, 0, texCoordBuffer);
 
-        if (cameraFrame != null && !textureLoaded) {
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+        // Activate texture unit 0 and bind the texture
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+        if (cameraFrame != null) {
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, cameraFrame, 0);
-            textureLoaded = true;
+            cameraFrame.recycle();
+            cameraFrame = null;
         }
 
+        // Pass the mode uniforms (Tritanopia, Protanopia, Deuteranopia)
+        int isTritanopiaLocation = GLES20.glGetUniformLocation(shaderProgram, "isTritanopiaMode");
+        int isProtanopiaLocation = GLES20.glGetUniformLocation(shaderProgram, "isProtanopiaMode");
+        int isDeuteranopiaLocation = GLES20.glGetUniformLocation(shaderProgram, "isDeuteranopiaMode");
+
+        GLES20.glUniform1i(isTritanopiaLocation, isTritanopiaEnabled ? 1 : 0);
+        GLES20.glUniform1i(isProtanopiaLocation, isPropanopiaEnabled ? 1 : 0);
+        GLES20.glUniform1i(isDeuteranopiaLocation, isDeuteranopiaEnabled ? 1 : 0);
+
+        Log.d("CameraFilterRenderer", "isTritanopiaEnabled: " + isTritanopiaEnabled);
+        Log.d("CameraFilterRenderer", "isProtanopiaEnabled: " + isPropanopiaEnabled);
+        Log.d("CameraFilterRenderer", "isDeuteranopiaEnabled: " + isDeuteranopiaEnabled);
+
+        // Pass the correct color matrix
+        if (isTritanopiaEnabled) {
+            int colorMatrixLocation = GLES20.glGetUniformLocation(shaderProgram, "colorMatrix");
+            GLES20.glUniformMatrix3fv(colorMatrixLocation, 1, false, tritanopiaMatrix, 0);
+            Log.d("CameraFilterRenderer", "Applying Tritanopia matrix");
+        } else if (isPropanopiaEnabled) {
+            int colorMatrixLocation = GLES20.glGetUniformLocation(shaderProgram, "colorMatrix");
+            GLES20.glUniformMatrix3fv(colorMatrixLocation, 1, false, protanopiaMatrix, 0);
+            Log.d("CameraFilterRenderer", "Applying Protanopia matrix");
+        } else if (isDeuteranopiaEnabled) {
+            int colorMatrixLocation = GLES20.glGetUniformLocation(shaderProgram, "colorMatrix");
+            GLES20.glUniformMatrix3fv(colorMatrixLocation, 1, false, deuteranopiaMatrix, 0);
+            Log.d("CameraFilterRenderer", "Applying Deuteranopia matrix");
+        }
+
+        // Draw the quad
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
 
+        // Cleanup
         GLES20.glDisableVertexAttribArray(positionHandle);
         GLES20.glDisableVertexAttribArray(texCoordHandle);
     }
 
 
-    public void release() {
-        if (isInitialized) {
-            GLES20.glDeleteTextures(1, new int[]{textureId}, 0);
-            GLES20.glDeleteProgram(shaderProgram);
-            isInitialized = false;
-        }
+    private String getVertexShaderCode() {
+        return "attribute vec4 position;" +
+                "attribute vec2 texCoord;" +
+                "varying vec2 vTexCoord;" +
+                "void main() {" +
+                "  gl_Position = position;" +
+                "  vTexCoord = texCoord;" +
+                "}";
     }
 
+    private String getFragmentShaderCode() {
+        return
+                "precision mediump float;" +
+                        "uniform sampler2D texture;" +
+                        "uniform bool isTritanopiaMode;" +
+                        "uniform bool isProtanopiaMode;" +
+                        "uniform bool isDeuteranopiaMode;" +
+                        "uniform mat3 colorMatrix;" +
+                        "varying vec2 vTexCoord;" +
+                        "void main() {" +
+                        "  vec4 color = texture2D(texture, vTexCoord);" +
+                        "  if (isTritanopiaMode) {" +
+                        "    vec3 transformed = colorMatrix * color.rgb;" +
+                        "    gl_FragColor = vec4(transformed, color.a);" +
+                        "  } else if (isProtanopiaMode) {" +
+                        "    vec3 transformed = colorMatrix * color.rgb;" +
+                        "    gl_FragColor = vec4(transformed, color.a);" +
+                        "  } else if (isDeuteranopiaMode) {" +
+                        "    vec3 transformed = colorMatrix * color.rgb;" +
+                        "    gl_FragColor = vec4(transformed, color.a);" +
+                        "  } else {" +
+                        "    gl_FragColor = color;" +
+                        "  }" +
+                        "}";
+    }
+
+
     private int createShaderProgram(String vertexCode, String fragmentCode) {
-        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexCode);
-        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentCode);
+        int vertexShader = compileShader(GLES20.GL_VERTEX_SHADER, vertexCode);
+        int fragmentShader = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentCode);
+
         int program = GLES20.glCreateProgram();
+        if (program == 0) {
+            Log.e("CameraFilterRenderer", "Error creating shader program");
+            return 0;
+        }
+
         GLES20.glAttachShader(program, vertexShader);
         GLES20.glAttachShader(program, fragmentShader);
         GLES20.glLinkProgram(program);
+
+        // Check link status
+        int[] linkStatus = new int[1];
+        GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
+        if (linkStatus[0] == 0) {
+            Log.e("CameraFilterRenderer", "Program link error: " + GLES20.glGetProgramInfoLog(program));
+            GLES20.glDeleteProgram(program);
+            return 0;
+        }
+
         return program;
     }
 
-    private int loadShader(int type, String shaderCode) {
+    private int compileShader(int type, String shaderCode) {
         int shader = GLES20.glCreateShader(type);
+        if (shader == 0) {
+            Log.e("CameraFilterRenderer", "Error creating shader");
+            return 0;
+        }
+
         GLES20.glShaderSource(shader, shaderCode);
         GLES20.glCompileShader(shader);
+
+        // Check compile status
+        int[] compileStatus = new int[1];
+        GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
+        if (compileStatus[0] == 0) {
+            Log.e("CameraFilterRenderer", "Shader compile error: " + GLES20.glGetShaderInfoLog(shader));
+            GLES20.glDeleteShader(shader);
+            return 0;
+        }
+
         return shader;
     }
-
-    private final String vertexShaderCode =
-            "attribute vec4 position;" +
-                    "attribute vec2 texCoord;" +
-                    "varying vec2 vTexCoord;" +
-                    "void main() {" +
-                    "  gl_Position = position;" +
-                    "  vTexCoord = texCoord;" +
-                    "}";
-
-    private final String fragmentShaderCode =
-            "precision mediump float;" +
-                    "uniform sampler2D texture;" +
-                    "varying vec2 vTexCoord;" +
-                    "uniform float minHue;" +
-                    "uniform float maxHue;" +
-                    "void main() {" +
-                    "  vec4 color = texture2D(texture, vTexCoord);" +
-                    "  float r = color.r, g = color.g, b = color.b;" +
-                    "  float maxVal = max(r, max(g, b));" +
-                    "  float minVal = min(r, min(g, b));" +
-                    "  float delta = maxVal - minVal;" +
-                    "  float hue = 0.0;" +
-                    "  if (delta != 0.0) {" +
-                    "    if (maxVal == r) hue = 60.0 * mod((g - b) / delta, 6.0);" +
-                    "    else if (maxVal == g) hue = 60.0 * ((b - r) / delta + 2.0);" +
-                    "    else hue = 60.0 * ((r - g) / delta + 4.0);" +
-                    "    if (hue < 0.0) hue += 360.0;" +
-                    "  }" +
-                    "  if (hue >= minHue && hue <= maxHue) {" +
-                    "    gl_FragColor = color;" +
-                    "  } else {" +
-                    "    float gray = (color.r + color.g + color.b) / 3.0;" +
-                    "    gl_FragColor = vec4(vec3(gray), color.a);" +
-                    "  }" +
-                    "}";
 }

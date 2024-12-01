@@ -1,0 +1,199 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.colorr"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-feature android:name="android.hardware.camera.any" />
+11-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:5:5-64
+11-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:5:19-61
+12
+13    <uses-permission android:name="android.permission.CAMERA" />
+13-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:7:5-65
+13-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:7:22-62
+14    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+14-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:8:5-71
+14-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:8:22-68
+15    <uses-permission
+15-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:9:5-11:38
+16        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+16-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:10:9-65
+17        android:maxSdkVersion="28" />
+17-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:11:9-35
+18    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+18-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:12:5-78
+18-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:12:22-75
+19    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+19-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:13:5-77
+19-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:13:22-74
+20
+21    <permission
+21-->[androidx.core:core:1.9.0] /Users/phamngocthachha/.gradle/caches/transforms-4/6b28a25b4d420b0daac0043af7eab7b0/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
+22        android:name="com.example.colorr.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+22-->[androidx.core:core:1.9.0] /Users/phamngocthachha/.gradle/caches/transforms-4/6b28a25b4d420b0daac0043af7eab7b0/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
+23        android:protectionLevel="signature" />
+23-->[androidx.core:core:1.9.0] /Users/phamngocthachha/.gradle/caches/transforms-4/6b28a25b4d420b0daac0043af7eab7b0/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
+24
+25    <uses-permission android:name="com.example.colorr.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+25-->[androidx.core:core:1.9.0] /Users/phamngocthachha/.gradle/caches/transforms-4/6b28a25b4d420b0daac0043af7eab7b0/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
+25-->[androidx.core:core:1.9.0] /Users/phamngocthachha/.gradle/caches/transforms-4/6b28a25b4d420b0daac0043af7eab7b0/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
+26
+27    <application
+27-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:15:5-50:19
+28        android:allowBackup="true"
+28-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:16:9-35
+29        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+29-->[androidx.core:core:1.9.0] /Users/phamngocthachha/.gradle/caches/transforms-4/6b28a25b4d420b0daac0043af7eab7b0/transformed/core-1.9.0/AndroidManifest.xml:28:18-86
+30        android:dataExtractionRules="@xml/data_extraction_rules"
+30-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:17:9-65
+31        android:debuggable="true"
+32        android:extractNativeLibs="false"
+33        android:fullBackupContent="@xml/backup_rules"
+33-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:18:9-54
+34        android:icon="@mipmap/ic_launcher"
+34-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:19:9-43
+35        android:label="@string/app_name"
+35-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:20:9-41
+36        android:roundIcon="@mipmap/ic_launcher_round"
+36-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:21:9-54
+37        android:supportsRtl="true"
+37-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:22:9-35
+38        android:testOnly="true"
+39        android:theme="@style/Theme.Colorr" >
+39-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:23:9-44
+40        <activity
+40-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:25:9-27:40
+41            android:name="com.example.colorr.ColorBlindnessTypeActivity"
+41-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:26:13-55
+42            android:exported="false" />
+42-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:27:13-37
+43        <activity
+43-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:28:9-30:40
+44            android:name="com.example.colorr.HowToUseActivity"
+44-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:29:13-45
+45            android:exported="false" />
+45-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:30:13-37
+46        <activity
+46-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:31:9-33:40
+47            android:name="com.example.colorr.Settings"
+47-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:32:13-37
+48            android:exported="false" />
+48-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:33:13-37
+49        <activity
+49-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:34:9-36:39
+50            android:name="com.example.colorr.TestView"
+50-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:35:13-37
+51            android:exported="true" />
+51-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:36:13-36
+52        <activity
+52-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:37:9-45:20
+53            android:name="com.example.colorr.MainActivity"
+53-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:38:13-41
+54            android:exported="true" >
+54-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:39:13-36
+55            <intent-filter>
+55-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:40:13-44:29
+56                <action android:name="android.intent.action.MAIN" />
+56-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:41:17-69
+56-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:41:25-66
+57
+58                <category android:name="android.intent.category.LAUNCHER" />
+58-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:43:17-77
+58-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:43:27-74
+59            </intent-filter>
+60        </activity>
+61
+62        <service
+62-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:47:9-49:40
+63            android:name="com.example.colorr.OverlayService"
+63-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:48:13-43
+64            android:exported="false" />
+64-->/Users/phamngocthachha/Documents/GitHub/colorr/app/src/main/AndroidManifest.xml:49:13-37
+65        <service
+65-->[androidx.camera:camera-camera2:1.5.0-alpha02] /Users/phamngocthachha/.gradle/caches/transforms-4/b71ea203292b5900b3e6f71d22b8c0fa/transformed/camera-camera2-1.5.0-alpha02/AndroidManifest.xml:24:9-33:19
+66            android:name="androidx.camera.core.impl.MetadataHolderService"
+66-->[androidx.camera:camera-camera2:1.5.0-alpha02] /Users/phamngocthachha/.gradle/caches/transforms-4/b71ea203292b5900b3e6f71d22b8c0fa/transformed/camera-camera2-1.5.0-alpha02/AndroidManifest.xml:25:13-75
+67            android:enabled="false"
+67-->[androidx.camera:camera-camera2:1.5.0-alpha02] /Users/phamngocthachha/.gradle/caches/transforms-4/b71ea203292b5900b3e6f71d22b8c0fa/transformed/camera-camera2-1.5.0-alpha02/AndroidManifest.xml:26:13-36
+68            android:exported="false" >
+68-->[androidx.camera:camera-camera2:1.5.0-alpha02] /Users/phamngocthachha/.gradle/caches/transforms-4/b71ea203292b5900b3e6f71d22b8c0fa/transformed/camera-camera2-1.5.0-alpha02/AndroidManifest.xml:27:13-37
+69            <meta-data
+69-->[androidx.camera:camera-camera2:1.5.0-alpha02] /Users/phamngocthachha/.gradle/caches/transforms-4/b71ea203292b5900b3e6f71d22b8c0fa/transformed/camera-camera2-1.5.0-alpha02/AndroidManifest.xml:30:13-32:89
+70                android:name="androidx.camera.core.impl.MetadataHolderService.DEFAULT_CONFIG_PROVIDER"
+70-->[androidx.camera:camera-camera2:1.5.0-alpha02] /Users/phamngocthachha/.gradle/caches/transforms-4/b71ea203292b5900b3e6f71d22b8c0fa/transformed/camera-camera2-1.5.0-alpha02/AndroidManifest.xml:31:17-103
+71                android:value="androidx.camera.camera2.Camera2Config$DefaultProvider" />
+71-->[androidx.camera:camera-camera2:1.5.0-alpha02] /Users/phamngocthachha/.gradle/caches/transforms-4/b71ea203292b5900b3e6f71d22b8c0fa/transformed/camera-camera2-1.5.0-alpha02/AndroidManifest.xml:32:17-86
+72        </service>
+73
+74        <provider
+74-->[androidx.emoji2:emoji2:1.2.0] /Users/phamngocthachha/.gradle/caches/transforms-4/de897d7c194f0e0b6e86e61cca840ebe/transformed/emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+75            android:name="androidx.startup.InitializationProvider"
+75-->[androidx.emoji2:emoji2:1.2.0] /Users/phamngocthachha/.gradle/caches/transforms-4/de897d7c194f0e0b6e86e61cca840ebe/transformed/emoji2-1.2.0/AndroidManifest.xml:25:13-67
+76            android:authorities="com.example.colorr.androidx-startup"
+76-->[androidx.emoji2:emoji2:1.2.0] /Users/phamngocthachha/.gradle/caches/transforms-4/de897d7c194f0e0b6e86e61cca840ebe/transformed/emoji2-1.2.0/AndroidManifest.xml:26:13-68
+77            android:exported="false" >
+77-->[androidx.emoji2:emoji2:1.2.0] /Users/phamngocthachha/.gradle/caches/transforms-4/de897d7c194f0e0b6e86e61cca840ebe/transformed/emoji2-1.2.0/AndroidManifest.xml:27:13-37
+78            <meta-data
+78-->[androidx.emoji2:emoji2:1.2.0] /Users/phamngocthachha/.gradle/caches/transforms-4/de897d7c194f0e0b6e86e61cca840ebe/transformed/emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+79                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+79-->[androidx.emoji2:emoji2:1.2.0] /Users/phamngocthachha/.gradle/caches/transforms-4/de897d7c194f0e0b6e86e61cca840ebe/transformed/emoji2-1.2.0/AndroidManifest.xml:30:17-75
+80                android:value="androidx.startup" />
+80-->[androidx.emoji2:emoji2:1.2.0] /Users/phamngocthachha/.gradle/caches/transforms-4/de897d7c194f0e0b6e86e61cca840ebe/transformed/emoji2-1.2.0/AndroidManifest.xml:31:17-49
+81            <meta-data
+81-->[androidx.lifecycle:lifecycle-process:2.6.1] /Users/phamngocthachha/.gradle/caches/transforms-4/c50a177383ae6846910ff36c4cd9e1ce/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:29:13-31:52
+82                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+82-->[androidx.lifecycle:lifecycle-process:2.6.1] /Users/phamngocthachha/.gradle/caches/transforms-4/c50a177383ae6846910ff36c4cd9e1ce/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:30:17-78
+83                android:value="androidx.startup" />
+83-->[androidx.lifecycle:lifecycle-process:2.6.1] /Users/phamngocthachha/.gradle/caches/transforms-4/c50a177383ae6846910ff36c4cd9e1ce/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:31:17-49
+84            <meta-data
+84-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
+85                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+85-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
+86                android:value="androidx.startup" />
+86-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
+87        </provider>
+88
+89        <receiver
+89-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
+90            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+90-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
+91            android:directBootAware="false"
+91-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
+92            android:enabled="true"
+92-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
+93            android:exported="true"
+93-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
+94            android:permission="android.permission.DUMP" >
+94-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
+95            <intent-filter>
+95-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
+96                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+96-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
+96-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
+97            </intent-filter>
+98            <intent-filter>
+98-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
+99                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+99-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
+99-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
+100            </intent-filter>
+101            <intent-filter>
+101-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
+102                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+102-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
+102-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
+103            </intent-filter>
+104            <intent-filter>
+104-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
+105                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+105-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
+105-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/phamngocthachha/.gradle/caches/transforms-4/1c4fe3a0f56ef5cf282bdf32dd5e9f0b/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:25-92
+106            </intent-filter>
+107        </receiver>
+108    </application>
+109
+110</manifest>

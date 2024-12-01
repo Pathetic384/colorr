@@ -75,20 +75,63 @@ public class MainActivity extends AppCompatActivity {
     private CameraFilterRenderer cameraFilterRenderer;
     private ProcessCameraProvider cameraProvider;
 
+    private Button tritanopiaButton;
+    private boolean isTritanopiaEnabled = false;
+
+    private Button propanopiaButton;
+    private boolean isPropanopiaEnabled = false;
+
+    private Button deuteranopiaButton;
+    private boolean isDeuteranopiaEnabled = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        tritanopiaButton = findViewById(R.id.tritanopiaButton);
+        tritanopiaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Toggle Tritanopia mode
+                isTritanopiaEnabled = !isTritanopiaEnabled;
+                Log.d("TritanopiaButton", "Tritanopia mode toggled: " + isTritanopiaEnabled);
+
+                // Update the renderer with the new mode
+                if (cameraFilterRenderer != null) {
+                    cameraFilterRenderer.setTritanopiaMode(isTritanopiaEnabled);
+                    glSurfaceView.requestRender();  // Request a render to update the display
+                }
+            }
+        });
+
+        Button protanopiaButton = findViewById(R.id.protanopiaButton);
+        Button deuteranopiaButton = findViewById(R.id.deuteranopiaButton);
+
+        protanopiaButton.setOnClickListener(v -> {
+            cameraFilterRenderer.setProtanopiaMode(!cameraFilterRenderer.isPropanopiaEnabled());
+            cameraFilterRenderer.setDeuteranopiaMode(false); // Disable Deuteranopia if enabling Protanopia
+            cameraFilterRenderer.setTritanopiaMode(false); // Disable Tritanopia
+            glSurfaceView.requestRender();
+        });
+
+        deuteranopiaButton.setOnClickListener(v -> {
+            cameraFilterRenderer.setDeuteranopiaMode(!cameraFilterRenderer.isDeuteranopiaEnabled());
+            cameraFilterRenderer.setProtanopiaMode(false); // Disable Protanopia if enabling Deuteranopia
+            cameraFilterRenderer.setTritanopiaMode(false); // Disable Tritanopia
+            glSurfaceView.requestRender();
+        });
+
+
 
 
         Button test = findViewById(R.id.testy);
         test.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            isSwitchingActivities = true;
-            startActivity(new Intent(MainActivity.this, TestView.class));
-                }
+            @Override
+            public void onClick(View v) {
+                isSwitchingActivities = true;
+                startActivity(new Intent(MainActivity.this, TestView.class));
+            }
         });
 
         // Check and request overlay permission
@@ -97,17 +140,29 @@ public class MainActivity extends AppCompatActivity {
         } else {
             requestOverlayPermission();
         }
+
         ToggleButton toggleOverlay = findViewById(R.id.toggleOverlay);
         toggleOverlay.setChecked(false);  // Ensure it starts in the off state
         toggleOverlay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 overlayEnabled = isChecked;
-                if (!overlayEnabled && overlayRunning) {
-                    stopOverlayService();  // Stop overlay if it was running
+                if (overlayEnabled) {
+                    if (Settings.canDrawOverlays(MainActivity.this)) {
+                        startOverlayService();  // Start overlay if permission is granted
+                    } else {
+                        requestOverlayPermission();  // Request permission if not granted
+                        toggleOverlay.setChecked(false);  // Reset toggle if permission is not granted
+                    }
+                } else {
+                    if (overlayRunning) {
+                        stopOverlayService();  // Stop overlay if it was running
+                    }
                 }
             }
         });
+
+        // Initialize the range seek bar
         rangeSeekBar = findViewById(R.id.rangeSeekBar);
         rangeSeekBar.setStartProgress(0);
         rangeSeekBar.setEndProgress(360);
@@ -122,11 +177,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         // Initialize GLSurfaceView and set renderer
         glSurfaceView = findViewById(R.id.glSurfaceView);
         glSurfaceView.setEGLContextClientVersion(2);
-        glSurfaceView.setPreserveEGLContextOnPause(true); // Keep EGL context on pause
+        glSurfaceView.setPreserveEGLContextOnPause(true);
         glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 
         // Initialize the renderer
@@ -135,23 +189,21 @@ public class MainActivity extends AppCompatActivity {
         glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
         // Bring glSurfaceView to the front
-        glSurfaceView.setZOrderOnTop(true); // This ensures GLSurfaceView is on top
+        glSurfaceView.setZOrderOnTop(true);
         glSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         glSurfaceView.bringToFront();
 
         // Start CameraX after the renderer is initialized
         startCameraX();
 
-
-
+        // Center Plus UI element
         centerPlus = findViewById(R.id.centerPlus);
         centerPlus.bringToFront();
         glSurfaceView.setZOrderMediaOverlay(true);
         centerPlus.setX(glSurfaceView.getWidth() / 2f - centerPlus.getWidth() / 2f);
         centerPlus.setY(glSurfaceView.getHeight() / 2f - centerPlus.getHeight() / 2f);
-
-
     }
+
 
     private void checkOverlayPermission() {
         if (Settings.canDrawOverlays(this)) {

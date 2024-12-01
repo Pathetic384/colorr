@@ -1,0 +1,7 @@
+com.example.colorr.test.app-tracing-1.2.0-0 /Users/phamngocthachha/.gradle/caches/transforms-4/18743415d1ad4628ce6fe30498cceaf1/transformed/tracing-1.2.0/res
+com.example.colorr.test.app-core-1.5.0-1 /Users/phamngocthachha/.gradle/caches/transforms-4/3ad010bd986899ac707d10aec020838f/transformed/core-1.5.0/res
+com.example.colorr.test.app-annotation-experimental-1.4.1-2 /Users/phamngocthachha/.gradle/caches/transforms-4/98534999558b933ff8447c5a790ecfe6/transformed/annotation-experimental-1.4.1/res
+com.example.colorr.test.app-androidTest-3 /Users/phamngocthachha/Documents/GitHub/colorr/app/build/generated/res/resValues/androidTest/debug
+com.example.colorr.test.app-mergeDebugAndroidTestResources-4 /Users/phamngocthachha/Documents/GitHub/colorr/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+com.example.colorr.test.app-mergeDebugAndroidTestResources-5 /Users/phamngocthachha/Documents/GitHub/colorr/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+com.example.colorr.test.app-debugAndroidTest-6 /Users/phamngocthachha/Documents/GitHub/colorr/app/build/intermediates/merged_res/debugAndroidTest/mergeDebugAndroidTestResources
