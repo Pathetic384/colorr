@@ -60,110 +60,43 @@ import java.util.concurrent.atomic.AtomicInteger;
 import it.mirko.rangeseekbar.OnRangeSeekBarListener;
 import it.mirko.rangeseekbar.RangeSeekBar;
 
-public class MainActivity extends AppCompatActivity {
-    //overlay
-    private static final int REQUEST_CODE_OVERLAY_PERMISSION = 1;
-    private boolean overlayEnabled = false;
-    private boolean overlayRunning = false;
-    private boolean isSwitchingActivities = false;
+public class MainActivity2 extends AppCompatActivity {
 
+    RangeSeekBar rangeSeekBar;
+    int str = 0;
+    int ed = 360;
     TextView centerPlus;
 
     private GLSurfaceView glSurfaceView;
-    private CameraFilterRenderer cameraFilterRenderer;
+    private CameraFilterRenderer2 cameraFilterRenderer;
     private ProcessCameraProvider cameraProvider;
-
-    private Button tritanopiaButton;
-    private boolean isTritanopiaEnabled = false;
-
-    private Button propanopiaButton;
-    private boolean isPropanopiaEnabled = false;
-
-    private Button deuteranopiaButton;
-    private boolean isDeuteranopiaEnabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
 
-        tritanopiaButton = findViewById(R.id.tritanopiaButton);
-        tritanopiaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Toggle Tritanopia mode
-                isTritanopiaEnabled = !isTritanopiaEnabled;
-                Log.d("TritanopiaButton", "Tritanopia mode toggled: " + isTritanopiaEnabled);
-
-                // Update the renderer with the new mode
-                if (cameraFilterRenderer != null) {
-                    cameraFilterRenderer.setTritanopiaMode(isTritanopiaEnabled);
-                    glSurfaceView.requestRender();  // Request a render to update the display
-                }
-            }
-        });
-
-        Button protanopiaButton = findViewById(R.id.protanopiaButton);
-        Button deuteranopiaButton = findViewById(R.id.deuteranopiaButton);
-
-        protanopiaButton.setOnClickListener(v -> {
-            cameraFilterRenderer.setProtanopiaMode(!cameraFilterRenderer.isPropanopiaEnabled());
-            cameraFilterRenderer.setDeuteranopiaMode(false); // Disable Deuteranopia if enabling Protanopia
-            cameraFilterRenderer.setTritanopiaMode(false); // Disable Tritanopia
-            glSurfaceView.requestRender();
-        });
-
-        deuteranopiaButton.setOnClickListener(v -> {
-            cameraFilterRenderer.setDeuteranopiaMode(!cameraFilterRenderer.isDeuteranopiaEnabled());
-            cameraFilterRenderer.setProtanopiaMode(false); // Disable Protanopia if enabling Deuteranopia
-            cameraFilterRenderer.setTritanopiaMode(false); // Disable Tritanopia
-            glSurfaceView.requestRender();
-        });
-
-
-        Button filter = findViewById(R.id.next);
-        filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isSwitchingActivities = true;
-                startActivity(new Intent(MainActivity.this, MainActivity2.class));
-            }
-        });
 
         Button test = findViewById(R.id.testy);
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isSwitchingActivities = true;
-                startActivity(new Intent(MainActivity.this, TestView.class));
+                startActivity(new Intent(MainActivity2.this, MainActivity.class));
             }
         });
 
-        // Check and request overlay permission
-        if (Settings.canDrawOverlays(this)) {
-            startOverlayService();
-        } else {
-            requestOverlayPermission();
-        }
-
-        ToggleButton toggleOverlay = findViewById(R.id.toggleOverlay);
-        toggleOverlay.setChecked(false);  // Ensure it starts in the off state
-        toggleOverlay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        rangeSeekBar = findViewById(R.id.rangeSeekBar);
+        rangeSeekBar.setStartProgress(0);
+        rangeSeekBar.setEndProgress(360);
+        rangeSeekBar.setMax(360);
+        rangeSeekBar.setMinDifference(40);
+        rangeSeekBar.setOnRangeSeekBarListener(new OnRangeSeekBarListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                overlayEnabled = isChecked;
-                if (overlayEnabled) {
-                    if (Settings.canDrawOverlays(MainActivity.this)) {
-                        startOverlayService();  // Start overlay if permission is granted
-                    } else {
-                        requestOverlayPermission();  // Request permission if not granted
-                        toggleOverlay.setChecked(false);  // Reset toggle if permission is not granted
-                    }
-                } else {
-                    if (overlayRunning) {
-                        stopOverlayService();  // Stop overlay if it was running
-                    }
-                }
+            public void onRangeValues(RangeSeekBar rangeSeekBar, int start, int end) {
+                str = start;
+                ed = end;
+                cameraFilterRenderer.setHueRange(str, ed); // Pass hue range to renderer
             }
         });
 
@@ -171,83 +104,33 @@ public class MainActivity extends AppCompatActivity {
         // Initialize GLSurfaceView and set renderer
         glSurfaceView = findViewById(R.id.glSurfaceView);
         glSurfaceView.setEGLContextClientVersion(2);
-        glSurfaceView.setPreserveEGLContextOnPause(true);
+        glSurfaceView.setPreserveEGLContextOnPause(true); // Keep EGL context on pause
         glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 
         // Initialize the renderer
-        cameraFilterRenderer = new CameraFilterRenderer();
+        cameraFilterRenderer = new CameraFilterRenderer2();
         glSurfaceView.setRenderer(cameraFilterRenderer);
         glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
         // Bring glSurfaceView to the front
-        glSurfaceView.setZOrderOnTop(true);
+        glSurfaceView.setZOrderOnTop(true); // This ensures GLSurfaceView is on top
         glSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         glSurfaceView.bringToFront();
 
         // Start CameraX after the renderer is initialized
         startCameraX();
 
-        // Center Plus UI element
+
+
         centerPlus = findViewById(R.id.centerPlus);
         centerPlus.bringToFront();
         glSurfaceView.setZOrderMediaOverlay(true);
         centerPlus.setX(glSurfaceView.getWidth() / 2f - centerPlus.getWidth() / 2f);
         centerPlus.setY(glSurfaceView.getHeight() / 2f - centerPlus.getHeight() / 2f);
+
+
     }
 
-
-    private void checkOverlayPermission() {
-        if (Settings.canDrawOverlays(this)) {
-            if (overlayEnabled && !overlayRunning) {
-                startOverlayService();
-            }
-        } else {
-            requestOverlayPermission();
-        }
-    }
-
-    private void requestOverlayPermission() {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + getPackageName()));
-        startActivityForResult(intent, REQUEST_CODE_OVERLAY_PERMISSION);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_OVERLAY_PERMISSION) {
-            if (Settings.canDrawOverlays(this) && overlayEnabled && !overlayRunning) {
-                startOverlayService();
-            }
-        }
-    }
-
-    private void startOverlayService() {
-        Intent serviceIntent = new Intent(this, OverlayService.class);
-        startService(serviceIntent);
-        overlayRunning = true;
-    }
-
-    private void stopOverlayService() {
-        Intent serviceIntent = new Intent(this, OverlayService.class);
-        stopService(serviceIntent);
-        overlayRunning = false;
-    }
-
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        if (!isSwitchingActivities && overlayEnabled && !overlayRunning) {
-            checkOverlayPermission();  // Start overlay if leaving the app and overlay is enabled
-        }
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stopOverlayService();  // Ensure the overlay stops when the app is destroyed
-    }
 
     private Handler resumeHandler = new Handler();
     private Runnable resumeRunnable = this::initializeGLSurfaceView;
@@ -268,19 +151,7 @@ public class MainActivity extends AppCompatActivity {
 //        stopOverlayService();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        isSwitchingActivities = false;
-        if (overlayRunning) {
-            stopOverlayService();  // Stop overlay when returning to the app
-        }
-        // Delay GLSurfaceView reinitialization to allow time for resources to be cleaned up
-        resumeHandler.postDelayed(resumeRunnable, 300); // Adjust delay if necessary
-        if (glSurfaceView != null) {
-            glSurfaceView.requestRender();
-        }
-    }
+
 
     private void initializeGLSurfaceView() {
         if (glSurfaceView == null) {
@@ -293,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
             glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 
             // Set the renderer only once
-            cameraFilterRenderer = new CameraFilterRenderer();
+            cameraFilterRenderer = new CameraFilterRenderer2();
             glSurfaceView.setRenderer(cameraFilterRenderer);
             glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 

@@ -15,7 +15,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class CameraFilterRenderer implements GLSurfaceView.Renderer {
-    private final Context context;
+
     private int shaderProgram = 0;
     private int textureId = 0;
     private Bitmap cameraFrame;
@@ -70,8 +70,7 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
 
 
 
-    public CameraFilterRenderer(Context context) {
-        this.context = context;
+    public CameraFilterRenderer() {
 
         // Initialize buffers
         vertexBuffer = ByteBuffer.allocateDirect(squareCoords.length * 4)

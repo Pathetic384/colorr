@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity2">
 
     <androidx.camera.view.PreviewView
         android:id="@+id/pvPreview"
@@ -42,6 +42,22 @@
         android:layout_height="100dp"
         android:layout_below="@id/pvPreview" >
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:srcCompat="@drawable/hsv" />
+
+        <it.mirko.rangeseekbar.RangeSeekBar
+            android:layout_margin="8dp"
+            android:id="@+id/rangeSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
@@ -59,56 +75,17 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp">
-
-            <Button
-                android:id="@+id/tritanopiaButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tritanopia"
-                android:layout_marginEnd="10dp" /> <!-- Space between buttons -->
-
-            <Button
-                android:id="@+id/deuteranopiaButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Deuteranopia"
-                android:layout_marginEnd="10dp" /> <!-- Space between buttons -->
-
-            <Button
-                android:id="@+id/protanopiaButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Protanopia" />
-        </LinearLayout>
+            android:layout_marginBottom="20dp"/>
 
         <Button
             android:id="@+id/testy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="testy"
-            android:layout_marginTop="60dp" />
+            android:layout_marginTop="50dp"
+            android:text="back" />
 
-
-        <Button
-            android:id="@+id/next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:layout_marginLeft="100dp"
-            android:text="filter" />
-
-        <ToggleButton
-            android:id="@+id/toggleOverlay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOn="Overlay ON"
-            android:textOff="Overlay OFF"
-            android:layout_marginLeft="280dp"
-            android:layout_marginTop="50dp"/>
 
     </RelativeLayout>
 
 
 </RelativeLayout>
-
