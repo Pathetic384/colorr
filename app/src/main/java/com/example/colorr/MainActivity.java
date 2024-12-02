@@ -130,6 +130,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button mimic = findViewById(R.id.nextnext);
+        mimic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isSwitchingActivities = true;
+                startActivity(new Intent(MainActivity.this, ColorBlindnessActivity.class));
+            }
+        });
+
         Button test = findViewById(R.id.testy);
         test.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">colorr</string>
+
+    <string-array name="color_blindness_types">
+            <item>Normal Vision</item>
+            <item>Protanopia</item>
+            <item>Deuteranopia</item>
+            <item>Tritanopia</item>
+    </string-array>
 </resources>

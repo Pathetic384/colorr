@@ -152,6 +152,8 @@ public class CameraFilterRenderer2 implements GLSurfaceView.Renderer {
         return shader;
     }
 
+
+
     private final String vertexShaderCode =
             "attribute vec4 position;" +
                     "attribute vec2 texCoord;" +

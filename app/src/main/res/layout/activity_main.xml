@@ -98,6 +98,14 @@
             android:layout_marginLeft="100dp"
             android:text="filter" />
 
+        <Button
+            android:id="@+id/nextnext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginLeft="200dp"
+            android:text="mimic" />
+
         <ToggleButton
             android:id="@+id/toggleOverlay"
             android:layout_width="wrap_content"
