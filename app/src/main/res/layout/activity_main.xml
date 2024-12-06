@@ -1,122 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
     tools:context=".MainActivity">
 
     <androidx.camera.view.PreviewView
         android:id="@+id/pvPreview"
-        android:layout_width="match_parent"
-        android:layout_height="600dp" >
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#673AB7">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.camera.view.PreviewView>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="600dp"
-        android:id="@+id/root">
-        <!--    android:layout_marginTop="250dp">-->
+
+    <!--    android:layout_marginTop="250dp">-->
 
 
-        <android.opengl.GLSurfaceView
-            android:id="@+id/glSurfaceView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </RelativeLayout>
+    <android.opengl.GLSurfaceView
+        android:id="@+id/glSurfaceView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/pvPreview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <TextView
         android:id="@+id/centerPlus"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="             +"
+        android:layout_marginTop="270dp"
+        android:layout_marginBottom="246dp"
+        android:fontFamily="@font/inter_thin"
+        android:text="+"
+        android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="60sp"
-        android:layout_marginTop="270dp" />
+        app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_below="@id/pvPreview" >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/nextnext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#00FFFFFF"
+            android:src="@drawable/simulation_24px"
+            android:text="mimic"
+            app:layout_constraintEnd_toStartOf="@+id/testy"
+            app:layout_constraintStart_toEndOf="@+id/next"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="32dp"
+            android:backgroundTint="#00FFFFFF"
+            android:src="@drawable/filter_alt_24px"
+            android:text="filter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/testy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:backgroundTint="#00FFFFFF"
+            android:src="@drawable/quiz_24px"
+            android:text="testy"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="#FFFFFF" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#7F1D1D1D"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/navigation">
+
+        <!-- Space between buttons -->
+
+        <Button
+            android:id="@+id/protanopiaButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            android:fontFamily="@font/inter_bold"
+            android:text="R"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/deuteranopiaButton" />
+
+        <Button
+            android:id="@+id/tritanopiaButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            android:fontFamily="@font/inter_bold"
+            android:text="B"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/deuteranopiaButton" />
+
+        <Button
+            android:id="@+id/deuteranopiaButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            android:fontFamily="@font/inter_bold"
+            android:text="G"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" /> <!-- Space between buttons -->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/centerPlus">
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="173dp"
-            android:layout_marginBottom="30dp"
+            android:fontFamily="@font/inter_medium"
             android:text="TextView"
-            android:textSize="20dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp">
-
-            <Button
-                android:id="@+id/tritanopiaButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tritanopia"
-                android:layout_marginEnd="10dp" /> <!-- Space between buttons -->
-
-            <Button
-                android:id="@+id/deuteranopiaButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Deuteranopia"
-                android:layout_marginEnd="10dp" /> <!-- Space between buttons -->
-
-            <Button
-                android:id="@+id/protanopiaButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Protanopia" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/testy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="testy"
-            android:layout_marginTop="60dp" />
-
-
-        <Button
-            android:id="@+id/next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:layout_marginLeft="100dp"
-            android:text="filter" />
-
-        <Button
-            android:id="@+id/nextnext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:layout_marginLeft="200dp"
-            android:text="mimic" />
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ToggleButton
             android:id="@+id/toggleOverlay"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textOn="Overlay ON"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/mybutton"
+            android:backgroundTint="#1D1D1D"
+            android:fontFamily="@font/inter_medium"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textColor="#FFFFFF"
             android:textOff="Overlay OFF"
-            android:layout_marginLeft="280dp"
-            android:layout_marginTop="50dp"/>
+            android:textOn="Overlay ON"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 

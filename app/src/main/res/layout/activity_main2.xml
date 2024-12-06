@@ -31,10 +31,12 @@
         android:id="@+id/centerPlus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="             +"
+        android:layout_marginTop="270dp"
+        android:fontFamily="@font/inter_thin"
+        android:text="+"
+        android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="60sp"
-        android:layout_marginTop="270dp" />
+        android:textSize="60sp" />
 
 
     <RelativeLayout

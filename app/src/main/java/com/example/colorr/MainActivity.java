@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -41,6 +42,7 @@ import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -72,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
     private GLSurfaceView glSurfaceView;
     private CameraFilterRenderer cameraFilterRenderer;
     private ProcessCameraProvider cameraProvider;
+    private ConstraintLayout modeChange;
+    private ConstraintLayout navigation;
 
     private Button tritanopiaButton;
     private boolean isTritanopiaEnabled = false;
@@ -86,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         tritanopiaButton = findViewById(R.id.tritanopiaButton);
         tritanopiaButton.setOnClickListener(new View.OnClickListener() {
@@ -106,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         Button protanopiaButton = findViewById(R.id.protanopiaButton);
         Button deuteranopiaButton = findViewById(R.id.deuteranopiaButton);
 
+
         protanopiaButton.setOnClickListener(v -> {
             cameraFilterRenderer.setProtanopiaMode(!cameraFilterRenderer.isPropanopiaEnabled());
             cameraFilterRenderer.setDeuteranopiaMode(false); // Disable Deuteranopia if enabling Protanopia
@@ -121,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        Button filter = findViewById(R.id.next);
+        ImageButton filter = findViewById(R.id.next);
         filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button mimic = findViewById(R.id.nextnext);
+        ImageButton mimic = findViewById(R.id.nextnext);
         mimic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button test = findViewById(R.id.testy);
+        ImageButton test = findViewById(R.id.testy);
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,6 +206,10 @@ public class MainActivity extends AppCompatActivity {
         // Center Plus UI element
         centerPlus = findViewById(R.id.centerPlus);
         centerPlus.bringToFront();
+        modeChange = findViewById(R.id.linearLayout);
+        modeChange.bringToFront();
+        navigation = findViewById(R.id.navigation);
+        navigation.bringToFront();
         glSurfaceView.setZOrderMediaOverlay(true);
         centerPlus.setX(glSurfaceView.getWidth() / 2f - centerPlus.getWidth() / 2f);
         centerPlus.setY(glSurfaceView.getHeight() / 2f - centerPlus.getHeight() / 2f);
