@@ -317,8 +317,8 @@ public class MainActivity extends AppCompatActivity {
             glSurfaceView.setRenderer(cameraFilterRenderer);
             glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
-            ViewGroup rootView = findViewById(R.id.root);
-            rootView.addView(glSurfaceView);
+            //ViewGroup rootView = findViewById(R.id.root);
+            //rootView.addView(glSurfaceView);
             glSurfaceView.onResume();  // Resume GLSurfaceView
         } else {
             // Only resume and request render if GLSurfaceView already exists
