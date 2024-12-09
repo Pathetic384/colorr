@@ -98,18 +98,7 @@ public class ColorBlindnessActivity extends AppCompatActivity {
         green = findViewById(R.id.green);
         blue = findViewById(R.id.blue);
         normal = findViewById(R.id.normal);
-
-
-//        View.OnClickListener listener = v -> {
-//            // Reset selection for all buttons
-//            normal.setSelected(false);
-//            red.setSelected(false);
-//            green.setSelected(false);
-//            blue.setSelected(false);
-//
-//            // Set selected for the clicked button
-//            v.setSelected(true);
-//        };
+        
 
 
 
