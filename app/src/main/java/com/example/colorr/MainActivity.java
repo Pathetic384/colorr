@@ -93,10 +93,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        Button protanopiaButton = findViewById(R.id.protanopiaButton);
+        Button deuteranopiaButton = findViewById(R.id.deuteranopiaButton);
         tritanopiaButton = findViewById(R.id.tritanopiaButton);
         tritanopiaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                protanopiaButton.setSelected(false);
+                deuteranopiaButton.setSelected(false);
+                tritanopiaButton.setSelected(!isTritanopiaEnabled);
                 // Toggle Tritanopia mode
                 isTritanopiaEnabled = !isTritanopiaEnabled;
                 Log.d("TritanopiaButton", "Tritanopia mode toggled: " + isTritanopiaEnabled);
@@ -109,11 +114,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button protanopiaButton = findViewById(R.id.protanopiaButton);
-        Button deuteranopiaButton = findViewById(R.id.deuteranopiaButton);
+
 
 
         protanopiaButton.setOnClickListener(v -> {
+            protanopiaButton.setSelected(!cameraFilterRenderer.isPropanopiaEnabled());
+            deuteranopiaButton.setSelected(false);
+            tritanopiaButton.setSelected(false);
             cameraFilterRenderer.setProtanopiaMode(!cameraFilterRenderer.isPropanopiaEnabled());
             cameraFilterRenderer.setDeuteranopiaMode(false); // Disable Deuteranopia if enabling Protanopia
             cameraFilterRenderer.setTritanopiaMode(false); // Disable Tritanopia
@@ -121,6 +128,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         deuteranopiaButton.setOnClickListener(v -> {
+            protanopiaButton.setSelected(false);
+            deuteranopiaButton.setSelected(!cameraFilterRenderer.isDeuteranopiaEnabled());
+            tritanopiaButton.setSelected(false);
             cameraFilterRenderer.setDeuteranopiaMode(!cameraFilterRenderer.isDeuteranopiaEnabled());
             cameraFilterRenderer.setProtanopiaMode(false); // Disable Protanopia if enabling Deuteranopia
             cameraFilterRenderer.setTritanopiaMode(false); // Disable Tritanopia

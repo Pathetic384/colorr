@@ -12,6 +12,7 @@ import android.graphics.YuvImage;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -98,39 +99,52 @@ public class ColorBlindnessActivity extends AppCompatActivity {
         blue = findViewById(R.id.blue);
         normal = findViewById(R.id.normal);
 
-        View.OnClickListener listener = v -> {
-            // Reset selection for all buttons
-            normal.setSelected(false);
-            red.setSelected(false);
-            green.setSelected(false);
-            blue.setSelected(false);
 
-            // Set selected for the clicked button
-            v.setSelected(true);
-        };
+//        View.OnClickListener listener = v -> {
+//            // Reset selection for all buttons
+//            normal.setSelected(false);
+//            red.setSelected(false);
+//            green.setSelected(false);
+//            blue.setSelected(false);
+//
+//            // Set selected for the clicked button
+//            v.setSelected(true);
+//        };
 
-        normal.setOnClickListener(listener);
-        red.setOnClickListener(listener);
-        green.setOnClickListener(listener);
-        blue.setOnClickListener(listener);
 
 
         normal.setOnClickListener(v -> {
+            normal.setSelected(true);
+            red.setSelected(false);
+            green.setSelected(false);
+            blue.setSelected(false);
             colorBlindnessRenderer.setColorBlindnessType(0);
             glSurfaceView.requestRender();
         });
 
         red.setOnClickListener(v -> {
+            normal.setSelected(false);
+            red.setSelected(true);
+            green.setSelected(false);
+            blue.setSelected(false);
             colorBlindnessRenderer.setColorBlindnessType(1); // Protanopia
             glSurfaceView.requestRender();
         });
 
         green.setOnClickListener(v -> {
+            normal.setSelected(false);
+            red.setSelected(false);
+            green.setSelected(true);
+            blue.setSelected(false);
             colorBlindnessRenderer.setColorBlindnessType(2); // Deuteranopia
             glSurfaceView.requestRender();
         });
 
         blue.setOnClickListener(v -> {
+            normal.setSelected(false);
+            red.setSelected(false);
+            green.setSelected(false);
+            blue.setSelected(true);
             colorBlindnessRenderer.setColorBlindnessType(3); // Tritanopia
             glSurfaceView.requestRender();
         });
