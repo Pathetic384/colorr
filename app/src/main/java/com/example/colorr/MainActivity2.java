@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -41,6 +42,7 @@ import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -65,9 +67,10 @@ public class MainActivity2 extends AppCompatActivity {
     RangeSeekBar rangeSeekBar;
     int str = 0;
     int ed = 360;
-    TextView centerPlus;
+    //TextView centerPlus;
 
     private GLSurfaceView glSurfaceView;
+    private ConstraintLayout navigation;
     private CameraFilterRenderer2 cameraFilterRenderer;
     private ProcessCameraProvider cameraProvider;
 
@@ -78,7 +81,7 @@ public class MainActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
 
 
-        Button test = findViewById(R.id.testy);
+        ImageButton test = findViewById(R.id.testy);
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,13 +123,17 @@ public class MainActivity2 extends AppCompatActivity {
         // Start CameraX after the renderer is initialized
         startCameraX();
 
-
-
-        centerPlus = findViewById(R.id.centerPlus);
-        centerPlus.bringToFront();
+        navigation = findViewById(R.id.navigation);
+        navigation.bringToFront();
         glSurfaceView.setZOrderMediaOverlay(true);
-        centerPlus.setX(glSurfaceView.getWidth() / 2f - centerPlus.getWidth() / 2f);
-        centerPlus.setY(glSurfaceView.getHeight() / 2f - centerPlus.getHeight() / 2f);
+
+
+
+//        centerPlus = findViewById(R.id.centerPlus);
+//        centerPlus.bringToFront();
+//        glSurfaceView.setZOrderMediaOverlay(true);
+//        centerPlus.setX(glSurfaceView.getWidth() / 2f - centerPlus.getWidth() / 2f);
+//        centerPlus.setY(glSurfaceView.getHeight() / 2f - centerPlus.getHeight() / 2f);
 
 
     }
@@ -168,15 +175,15 @@ public class MainActivity2 extends AppCompatActivity {
             glSurfaceView.setRenderer(cameraFilterRenderer);
             glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
-            ViewGroup rootView = findViewById(R.id.root);
-            rootView.addView(glSurfaceView);
+            //ViewGroup rootView = findViewById(R.id.root);
+            //rootView.addView(glSurfaceView);
             glSurfaceView.onResume();  // Resume GLSurfaceView
         } else {
             // Only resume and request render if GLSurfaceView already exists
             glSurfaceView.onResume();
             glSurfaceView.requestRender();
         }
-        centerPlus.bringToFront();
+        //centerPlus.bringToFront();
         glSurfaceView.setZOrderMediaOverlay(true);
         // Restart CameraX if necessary
         startCameraX();
@@ -296,16 +303,16 @@ public class MainActivity2 extends AppCompatActivity {
         int color = Color.rgb(r, g, b);
 
         // Get the color name using the custom method
-        String colorName = ColorUtils.getColorName(color);
+        //String colorName = ColorUtils.getColorName(color);
 
         // Display the color name in the TextView
-        TextView tv = findViewById(R.id.textView);
-        tv.bringToFront();
+        //TextView tv = findViewById(R.id.textView);
+        //tv.bringToFront();
 
-        tv.setText(colorName);
+        //tv.setText(colorName);
 
 
-        Log.d("ColorDetection", "Detected color: " + colorName);
+        //Log.d("ColorDetection", "Detected color: " + colorName);
     }
 
 

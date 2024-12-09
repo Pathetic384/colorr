@@ -1,30 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".ColorBlindnessActivity">
 
     <!-- PreviewView to show camera feed -->
     <androidx.camera.view.PreviewView
         android:id="@+id/pvPreview"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- GLSurfaceView to render filtered camera feed -->
     <android.opengl.GLSurfaceView
         android:id="@+id/glSurfaceView"
-        android:layout_width="match_parent"
-        android:layout_height="600dp"/>
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pvPreview" />
 
 
     <!-- Spinner to select color blindness type -->
-    <Spinner
-        android:id="@+id/spinnerColorBlindness"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
-</LinearLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="#801D1D1D"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+        <Button
+            android:id="@+id/red"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/button_selector"
+            android:fontFamily="@font/inter_bold"
+            android:text="R"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/green"
+            app:layout_constraintStart_toEndOf="@id/normal"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/green"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/button_selector"
+            android:fontFamily="@font/inter_bold"
+            android:text="G"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/blue"
+            app:layout_constraintStart_toEndOf="@id/red"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/blue"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/button_selector"
+            android:fontFamily="@font/inter_bold"
+            android:text="B"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/green"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/normal"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/button_selector"
+            android:fontFamily="@font/inter_bold"
+            android:paddingTop="4dp"
+            android:text="*"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/red"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/glSurfaceView">
+
+        <ImageButton
+            android:id="@+id/back2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@null"
+            android:backgroundTint="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_arrow_back_ios_24"
+            app:tint="#FFFFFF" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 
