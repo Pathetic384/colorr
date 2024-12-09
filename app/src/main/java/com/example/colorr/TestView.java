@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +31,8 @@ public class TestView extends AppCompatActivity {
     //18-23: vague tritan
     //24,25: clear tritan
 
-    Button back, enter;
+    ImageButton back;
+    Button  enter;
     EditText box;
     ImageView image;
     TextView textView;
@@ -80,11 +82,11 @@ public class TestView extends AppCompatActivity {
             return;
         }
         if(total == 10) {
-            String result = "ur alr :D";
-            if(error >= 7) result = "you have cancer";
-            else if(both >=3 && green >= 2) result = "you have deuteranopia";
-            else if(both >=3 && red >= 2) result = "you have protanopia";
-            else if(tri >=2 ) result = "you have tritanopia";
+            String result = "You do not have color blindness :D";
+            if(error >= 7) result = "You might have total color blindness :(";
+            else if(both >=3 && green >= 2) result = "You have Deuteranopia (green deficiency)";
+            else if(both >=3 && red >= 2) result = "You have Protanopia (red deficiency)";
+            else if(tri >=2 ) result = "You have Tritanopia (blue deficiency)";
             textView.setText(result);
 
             Resources res = getResources();
