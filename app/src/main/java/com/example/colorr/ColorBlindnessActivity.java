@@ -99,7 +99,7 @@ public class ColorBlindnessActivity extends AppCompatActivity {
         blue = findViewById(R.id.blue);
         normal = findViewById(R.id.normal);
         
-
+        normal.setSelected(true);
 
 
         normal.setOnClickListener(v -> {

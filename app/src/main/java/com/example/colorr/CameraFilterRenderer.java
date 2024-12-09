@@ -137,6 +137,9 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
         return isDeuteranopiaEnabled;
     }
 
+    public boolean isTritanopiaEnabled() {
+        return isTritanopiaEnabled;
+    }
 
     public CameraFilterRenderer() {
 
