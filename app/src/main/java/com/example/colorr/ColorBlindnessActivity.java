@@ -1,5 +1,7 @@
 package com.example.colorr;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -13,6 +15,8 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +27,7 @@ import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -43,23 +48,33 @@ public class ColorBlindnessActivity extends AppCompatActivity {
     private ColorBlindnessRenderer colorBlindnessRenderer;
     private ProcessCameraProvider cameraProvider;
     private PreviewView previewView;
-    private Spinner colorBlindnessSpinner;
+    //private Spinner colorBlindnessSpinner;
+    private ConstraintLayout navigation;
+    private ConstraintLayout colorBlindnessType;
+    ImageButton back;
+    private Button red, green, blue, normal;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_color_blindness);
+        back = findViewById(R.id.back2);
 
         // Initialize UI components
         previewView = findViewById(R.id.pvPreview);
         glSurfaceView = findViewById(R.id.glSurfaceView);
-        colorBlindnessSpinner = findViewById(R.id.spinnerColorBlindness);
+        //colorBlindnessSpinner = findViewById(R.id.spinnerColorBlindness);
+
+        back.setOnClickListener(v -> {
+            startActivity(new Intent(ColorBlindnessActivity.this, MainActivity.class));
+        });
 
         // Set up the Spinner for color blindness selection
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.color_blindness_types, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        colorBlindnessSpinner.setAdapter(adapter);
+        //colorBlindnessSpinner.setAdapter(adapter);
 
         // Initialize GLSurfaceView and set renderer
         glSurfaceView.setEGLContextClientVersion(2);
@@ -78,18 +93,52 @@ public class ColorBlindnessActivity extends AppCompatActivity {
 
         // Start CameraX after the renderer is initialized
         startCameraX();
+        red = findViewById(R.id.red);
+        green = findViewById(R.id.green);
+        blue = findViewById(R.id.blue);
+        normal = findViewById(R.id.normal);
 
-        // Spinner listener to change the color blindness type
-        colorBlindnessSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                colorBlindnessRenderer.setColorBlindnessType(position);
-                glSurfaceView.requestRender();  // Trigger re-render when type changes
-            }
+        View.OnClickListener listener = v -> {
+            // Reset selection for all buttons
+            normal.setSelected(false);
+            red.setSelected(false);
+            green.setSelected(false);
+            blue.setSelected(false);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {}
+            // Set selected for the clicked button
+            v.setSelected(true);
+        };
+
+        normal.setOnClickListener(listener);
+        red.setOnClickListener(listener);
+        green.setOnClickListener(listener);
+        blue.setOnClickListener(listener);
+
+
+        normal.setOnClickListener(v -> {
+            colorBlindnessRenderer.setColorBlindnessType(0);
+            glSurfaceView.requestRender();
         });
+
+        red.setOnClickListener(v -> {
+            colorBlindnessRenderer.setColorBlindnessType(1); // Protanopia
+            glSurfaceView.requestRender();
+        });
+
+        green.setOnClickListener(v -> {
+            colorBlindnessRenderer.setColorBlindnessType(2); // Deuteranopia
+            glSurfaceView.requestRender();
+        });
+
+        blue.setOnClickListener(v -> {
+            colorBlindnessRenderer.setColorBlindnessType(3); // Tritanopia
+            glSurfaceView.requestRender();
+        });
+        navigation = findViewById(R.id.constraintLayout2);
+        colorBlindnessType = findViewById(R.id.constraintLayout);
+        navigation.bringToFront();
+        colorBlindnessType.bringToFront();
+        glSurfaceView.setZOrderMediaOverlay(true);
     }
 
     private void startCameraX() {
