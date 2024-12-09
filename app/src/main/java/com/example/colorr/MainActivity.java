@@ -96,36 +96,45 @@ public class MainActivity extends AppCompatActivity {
         Button protanopiaButton = findViewById(R.id.protanopiaButton);
         Button deuteranopiaButton = findViewById(R.id.deuteranopiaButton);
         tritanopiaButton = findViewById(R.id.tritanopiaButton);
-        tritanopiaButton.setOnClickListener(v -> {
-            protanopiaButton.setSelected(false);
-            deuteranopiaButton.setSelected(false);
-            tritanopiaButton.setSelected(!cameraFilterRenderer.isTritanopiaEnabled());
-            cameraFilterRenderer.setProtanopiaMode(false);
-            cameraFilterRenderer.setDeuteranopiaMode(false);
-            cameraFilterRenderer.setTritanopiaMode(!cameraFilterRenderer.isTritanopiaEnabled());
-            glSurfaceView.requestRender();
+        tritanopiaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                protanopiaButton.setSelected(false);
+                deuteranopiaButton.setSelected(false);
+                tritanopiaButton.setSelected(!isTritanopiaEnabled);
+                // Toggle Tritanopia mode
+                isTritanopiaEnabled = !isTritanopiaEnabled;
+                Log.d("TritanopiaButton", "Tritanopia mode toggled: " + isTritanopiaEnabled);
+
+                // Update the renderer with the new mode
+                if (cameraFilterRenderer != null) {
+                    //cameraFilterRenderer.setTritanopiaMode(isTritanopiaEnabled);
+                    glSurfaceView.requestRender();  // Request a render to update the display
+                    cameraFilterRenderer.setHueRange(150,300);
+                }
+            }
         });
 
 
 
 
         protanopiaButton.setOnClickListener(v -> {
-            protanopiaButton.setSelected(!cameraFilterRenderer.isPropanopiaEnabled());
+          //  protanopiaButton.setSelected(!cameraFilterRenderer.isPropanopiaEnabled());
             deuteranopiaButton.setSelected(false);
             tritanopiaButton.setSelected(false);
-            cameraFilterRenderer.setProtanopiaMode(!cameraFilterRenderer.isPropanopiaEnabled());
-            cameraFilterRenderer.setDeuteranopiaMode(false); // Disable Deuteranopia if enabling Protanopia
-            cameraFilterRenderer.setTritanopiaMode(false); // Disable Tritanopia
+          //  cameraFilterRenderer.setProtanopiaMode(!cameraFilterRenderer.isPropanopiaEnabled());
+           // cameraFilterRenderer.setDeuteranopiaMode(false); // Disable Deuteranopia if enabling Protanopia
+           // cameraFilterRenderer.setTritanopiaMode(false); // Disable Tritanopia
             glSurfaceView.requestRender();
         });
 
         deuteranopiaButton.setOnClickListener(v -> {
             protanopiaButton.setSelected(false);
-            deuteranopiaButton.setSelected(!cameraFilterRenderer.isDeuteranopiaEnabled());
+          //  deuteranopiaButton.setSelected(!cameraFilterRenderer.isDeuteranopiaEnabled());
             tritanopiaButton.setSelected(false);
-            cameraFilterRenderer.setDeuteranopiaMode(!cameraFilterRenderer.isDeuteranopiaEnabled());
-            cameraFilterRenderer.setProtanopiaMode(false); // Disable Protanopia if enabling Deuteranopia
-            cameraFilterRenderer.setTritanopiaMode(false); // Disable Tritanopia
+           // cameraFilterRenderer.setDeuteranopiaMode(!cameraFilterRenderer.isDeuteranopiaEnabled());
+           // cameraFilterRenderer.setProtanopiaMode(false); // Disable Protanopia if enabling Deuteranopia
+           // cameraFilterRenderer.setTritanopiaMode(false); // Disable Tritanopia
             glSurfaceView.requestRender();
         });
 
