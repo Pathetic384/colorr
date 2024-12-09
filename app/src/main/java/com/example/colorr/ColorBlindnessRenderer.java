@@ -100,8 +100,18 @@ public class ColorBlindnessRenderer implements GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         GLES20.glUseProgram(shaderProgram);
+
+        // Set the color blindness type
         GLES20.glUniform1i(GLES20.glGetUniformLocation(shaderProgram, "colorBlindnessType"), colorBlindnessType);
 
+        // Ensure the camera frame texture is correctly loaded
+        if (cameraFrame != null && !textureLoaded) {
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, cameraFrame, 0);
+            textureLoaded = true;
+        }
+
+        // Setup vertex and texture coordinates
         int positionHandle = GLES20.glGetAttribLocation(shaderProgram, "position");
         GLES20.glEnableVertexAttribArray(positionHandle);
         GLES20.glVertexAttribPointer(positionHandle, 2, GLES20.GL_FLOAT, false, 0, vertexBuffer);
@@ -110,17 +120,14 @@ public class ColorBlindnessRenderer implements GLSurfaceView.Renderer {
         GLES20.glEnableVertexAttribArray(texCoordHandle);
         GLES20.glVertexAttribPointer(texCoordHandle, 2, GLES20.GL_FLOAT, false, 0, texCoordBuffer);
 
-        if (cameraFrame != null && !textureLoaded) {
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, cameraFrame, 0);
-            textureLoaded = true;
-        }
-
+        // Draw the frame
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
 
+        // Disable attributes after drawing
         GLES20.glDisableVertexAttribArray(positionHandle);
         GLES20.glDisableVertexAttribArray(texCoordHandle);
     }
+
 
     private int createShaderProgram(String vertexCode, String fragmentCode) {
         int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexCode);
@@ -206,6 +213,48 @@ public class ColorBlindnessRenderer implements GLSurfaceView.Renderer {
 
                     "    // Convert the transformed color back to sRGB\n" +
                     "    gl_FragColor = vec4(linearToSrgb(linearColor), color.a);\n" +
+                    "}";
+
+
+    private final String colorCorrectionShaderCode =
+            "precision mediump float;\n" +
+                    "uniform sampler2D texture;\n" +
+                    "varying vec2 vTexCoord;\n" +
+                    "uniform int colorBlindnessType;\n" +
+
+                    "// Remap for Protanopia (Red-blindness)\n" +
+                    "vec3 remapProtanopia(vec3 color) {\n" +
+                    "    // Color transformation for Protanopia (adjust red channel to make it distinguishable)\n" +
+                    "    return vec3(color.r * 0.7 + color.g * 0.3, color.g, color.b);\n" +
+                    "}\n" +
+
+                    "// Remap for Deuteranopia (Green-blindness)\n" +
+                    "vec3 remapDeuteranopia(vec3 color) {\n" +
+                    "    // Color transformation for Deuteranopia (adjust green channel to make it distinguishable)\n" +
+                    "    return vec3(color.r, color.g * 0.7 + color.b * 0.3, color.b);\n" +
+                    "}\n" +
+
+                    "// Remap for Tritanopia (Blue-yellow blindness)\n" +
+                    "vec3 remapTritanopia(vec3 color) {\n" +
+                    "    // Color transformation for Tritanopia (adjust blue channel to make it distinguishable)\n" +
+                    "    return vec3(color.r * 0.7 + color.g * 0.3, color.g, color.b * 0.6);\n" +
+                    "}\n" +
+
+                    "void main() {\n" +
+                    "    // Sample the color from the texture\n" +
+                    "    vec4 color = texture2D(texture, vTexCoord);\n" +
+
+                    "    // Apply the color remapping based on the selected color blindness type\n" +
+                    "    if (colorBlindnessType == 1) {\n" +
+                    "        color.rgb = remapProtanopia(color.rgb);\n" +
+                    "    } else if (colorBlindnessType == 2) {\n" +
+                    "        color.rgb = remapDeuteranopia(color.rgb);\n" +
+                    "    } else if (colorBlindnessType == 3) {\n" +
+                    "        color.rgb = remapTritanopia(color.rgb);\n" +
+                    "    }\n" +
+
+                    "    // Output the remapped color\n" +
+                    "    gl_FragColor = color;\n" +
                     "}";
 
 //    private final String fragmentShaderCode =
