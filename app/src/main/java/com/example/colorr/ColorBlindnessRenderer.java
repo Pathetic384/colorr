@@ -192,7 +192,7 @@ public class ColorBlindnessRenderer implements GLSurfaceView.Renderer {
                     "mat3 tritanopiaMatrix = mat3(\n" +
                     "    0.950, 0.050, 0.000,\n" +
                     "    0.000, 0.433, 0.567,\n" +
-                    "    0.000, 0.500, 0.500\n" +
+                    "    0.000, 0.475, 0.525\n" +
                     ");\n" +
 
                     "void main() {\n" +
