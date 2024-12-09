@@ -96,22 +96,14 @@ public class MainActivity extends AppCompatActivity {
         Button protanopiaButton = findViewById(R.id.protanopiaButton);
         Button deuteranopiaButton = findViewById(R.id.deuteranopiaButton);
         tritanopiaButton = findViewById(R.id.tritanopiaButton);
-        tritanopiaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                protanopiaButton.setSelected(false);
-                deuteranopiaButton.setSelected(false);
-                tritanopiaButton.setSelected(!isTritanopiaEnabled);
-                // Toggle Tritanopia mode
-                isTritanopiaEnabled = !isTritanopiaEnabled;
-                Log.d("TritanopiaButton", "Tritanopia mode toggled: " + isTritanopiaEnabled);
-
-                // Update the renderer with the new mode
-                if (cameraFilterRenderer != null) {
-                    cameraFilterRenderer.setTritanopiaMode(isTritanopiaEnabled);
-                    glSurfaceView.requestRender();  // Request a render to update the display
-                }
-            }
+        tritanopiaButton.setOnClickListener(v -> {
+            protanopiaButton.setSelected(false);
+            deuteranopiaButton.setSelected(false);
+            tritanopiaButton.setSelected(!cameraFilterRenderer.isTritanopiaEnabled());
+            cameraFilterRenderer.setProtanopiaMode(false);
+            cameraFilterRenderer.setDeuteranopiaMode(false);
+            cameraFilterRenderer.setTritanopiaMode(!cameraFilterRenderer.isTritanopiaEnabled());
+            glSurfaceView.requestRender();
         });
 
 
