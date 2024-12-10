@@ -47,6 +47,11 @@ public class TestView extends AppCompatActivity {
     List<String> red_or_green;
     List<String> vague_tritan;
     List<String> clear_tritan;
+
+    private int current = 1;
+    private TextView process;
+
+
     int total = 1, both = 0, red = 0, green = 0, tri = 0, error = 0;
 
     @Override
@@ -54,11 +59,15 @@ public class TestView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_view);
 
+
+        process = findViewById(R.id.process);
         back = findViewById(R.id.back);
         box = findViewById(R.id.box);
         enter = findViewById(R.id.enter);
         image = findViewById(R.id.imageView2);
         textView = findViewById(R.id.textView2);
+
+        process.setText(current + " / " + 10);
 
         back.setOnClickListener(v -> {
             startActivity(new Intent(TestView.this, MainActivity.class));
@@ -182,7 +191,9 @@ public class TestView extends AppCompatActivity {
             }
         }
 
+        current++;
         total++;
+        process.setText(current + " / " + 10); // Update progress
     }
 
     public void setImg(int i) {
