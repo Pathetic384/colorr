@@ -136,7 +136,7 @@ public class MainActivity2 extends AppCompatActivity {
 //        glSurfaceView.setZOrderMediaOverlay(true);
 //        centerPlus.setX(glSurfaceView.getWidth() / 2f - centerPlus.getWidth() / 2f);
 //        centerPlus.setY(glSurfaceView.getHeight() / 2f - centerPlus.getHeight() / 2f);
-        Button startTutorialButton = findViewById(R.id.tutorial);
+        ImageButton startTutorialButton = findViewById(R.id.tutorial);
         startTutorialButton.setOnClickListener(v -> startTutorial(rootView, rangeSeekBar, test));
 
 

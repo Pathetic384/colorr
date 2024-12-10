@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
         centerPlus.setY(glSurfaceView.getHeight() / 2f - centerPlus.getHeight() / 2f);
 
         TextView tv = findViewById(R.id.textView);
-        Button startTutorialButton = findViewById(R.id.tutorial);
+        ImageButton startTutorialButton = findViewById(R.id.tutorial);
         startTutorialButton.setOnClickListener(v -> startTutorial(centerPlus, tv, protanopiaButton, deuteranopiaButton, tritanopiaButton, filter, mimic, test));
     }
 

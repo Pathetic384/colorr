@@ -84,7 +84,7 @@ public class TestView extends AppCompatActivity {
 
         View rootView = findViewById(android.R.id.content);
 
-        Button startTutorialButton = findViewById(R.id.tutorial);
+        ImageButton startTutorialButton = findViewById(R.id.tutorial);
         startTutorialButton.setOnClickListener(v -> startTutorial(rootView, image, box, enter, back));
     }
 

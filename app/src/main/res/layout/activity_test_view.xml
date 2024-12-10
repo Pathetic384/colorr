@@ -12,24 +12,22 @@
         android:id="@+id/process"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:fontFamily="@font/inter"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/inter_medium"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/imageView2"
         app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="331dp"
         android:layout_height="341dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:layout_constraintTop_toBottomOf="@+id/process"
         app:srcCompat="@drawable/p1" />
 
     <ImageButton
@@ -83,13 +81,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/tutorial"
-        android:text="tutyorial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/help_24px"
+        app:tint="#FFFFFF"
+        android:text="tutyorial"
+        app:layout_constraintBottom_toBottomOf="@+id/back"
+        app:layout_constraintEnd_toStartOf="@+id/back"
+        app:layout_constraintTop_toTopOf="@+id/back" />
 
     <TextView
         android:id="@+id/textView2"
@@ -110,7 +113,7 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="340dp"
+        android:layout_width="wrap_content"
         android:layout_height="33dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"

@@ -145,7 +145,7 @@ public class ColorBlindnessActivity extends AppCompatActivity {
         colorBlindnessType.bringToFront();
         glSurfaceView.setZOrderMediaOverlay(true);
 
-        Button startTutorialButton = findViewById(R.id.tutorial);
+        ImageButton startTutorialButton = findViewById(R.id.tutorial);
         startTutorialButton.setOnClickListener(v -> startTutorial(back, red, green, blue, normal));
     }
 

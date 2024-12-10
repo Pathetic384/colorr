@@ -67,6 +67,20 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
+            android:id="@+id/tutorial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:backgroundTint="#00FFFFFF"
+            android:src="@drawable/help_24px"
+            android:text="tutyorial"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/testy"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
             android:id="@+id/nextnext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -83,11 +97,13 @@
             android:id="@+id/next"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="24dp"
             android:backgroundTint="#00FFFFFF"
             android:src="@drawable/filter_alt_24px"
             android:text="filter"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/nextnext"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="#FFFFFF" />
@@ -96,12 +112,12 @@
             android:id="@+id/testy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
             android:backgroundTint="#00FFFFFF"
             android:src="@drawable/quiz_24px"
             android:text="testy"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tutorial"
+            app:layout_constraintStart_toEndOf="@+id/nextnext"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="#FFFFFF" />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -197,14 +213,6 @@
 <!--            android:textOn="Overlay ON"-->
 <!--            app:layout_constraintBottom_toBottomOf="parent"-->
 <!--            app:layout_constraintEnd_toEndOf="parent" />-->
-
-        <Button
-            android:id="@+id/tutorial"
-            android:text="tutyorial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
