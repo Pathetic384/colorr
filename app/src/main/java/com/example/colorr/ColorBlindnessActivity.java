@@ -31,6 +31,8 @@ import androidx.camera.view.PreviewView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.ByteArrayOutputStream;
@@ -142,7 +144,70 @@ public class ColorBlindnessActivity extends AppCompatActivity {
         navigation.bringToFront();
         colorBlindnessType.bringToFront();
         glSurfaceView.setZOrderMediaOverlay(true);
+
+        Button startTutorialButton = findViewById(R.id.tutorial);
+        startTutorialButton.setOnClickListener(v -> startTutorial(back, red, green, blue, normal));
     }
+
+
+    private void startTutorial(View back, View red, View green, View blue, View normal) {
+        new TapTargetSequence(this)
+                .targets(
+                        TapTarget.forView(back, "Back Button", "This button navigates back to the main activity.")
+                                .outerCircleColor(R.color.teal_200) // Custom color for this target
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+                        TapTarget.forView(red, "Red Filter", "This button applies the red filter for color adjustment.")
+                                .outerCircleColor(R.color.red_200) // Custom color for this target
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+                        TapTarget.forView(green, "Green Filter", "This button applies the green filter for color adjustment.")
+                                .outerCircleColor(R.color.green_200) // Custom color for this target
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+                        TapTarget.forView(blue, "Blue Filter", "This button applies the blue filter for color adjustment.")
+                                .outerCircleColor(R.color.blue_200) // Custom color for this target
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+                        TapTarget.forView(normal, "Normal View", "This button resets the filters to normal view.")
+                                .outerCircleColor(R.color.purple_200) // Custom color for this target
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true)
+                )
+                .listener(new TapTargetSequence.Listener() {
+                    @Override
+                    public void onSequenceFinish() {
+                        // Tutorial finished
+                    }
+
+                    @Override
+                    public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+                        // Each step of the tutorial
+                    }
+
+                    @Override
+                    public void onSequenceCanceled(TapTarget lastTarget) {
+                        // Tutorial canceled
+                    }
+                })
+                .start();
+    }
+
 
     private void startCameraX() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);

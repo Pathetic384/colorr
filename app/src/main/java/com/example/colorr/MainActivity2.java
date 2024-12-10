@@ -50,6 +50,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.colorr.databinding.ActivityMainBinding;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.rtugeek.android.colorseekbar.ColorSeekBar;
 
@@ -127,15 +129,67 @@ public class MainActivity2 extends AppCompatActivity {
         navigation.bringToFront();
         glSurfaceView.setZOrderMediaOverlay(true);
 
-
+        View rootView = findViewById(android.R.id.content);
 
 //        centerPlus = findViewById(R.id.centerPlus);
 //        centerPlus.bringToFront();
 //        glSurfaceView.setZOrderMediaOverlay(true);
 //        centerPlus.setX(glSurfaceView.getWidth() / 2f - centerPlus.getWidth() / 2f);
 //        centerPlus.setY(glSurfaceView.getHeight() / 2f - centerPlus.getHeight() / 2f);
+        Button startTutorialButton = findViewById(R.id.tutorial);
+        startTutorialButton.setOnClickListener(v -> startTutorial(rootView, rangeSeekBar, test));
 
 
+    }
+
+    private void startTutorial(View rootView, View rangeSeekBar, View testButton) {
+        new TapTargetSequence(this)
+                .targets(
+                        // Highlight the whole screen with a transparent inner circle
+                        TapTarget.forView(rootView, "Color Filter Activity", "This activity lets you filter colors out of a specified range.")
+                                .outerCircleColor(R.color.teal_200) // Custom color for this target
+                                .outerCircleAlpha(0.96f)// Inner circle is transparent
+                                .transparentTarget(true)
+                                .targetRadius(200) // Large radius to cover the whole screen
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+                        // Highlight the rangeSeekBar
+                        TapTarget.forView(rangeSeekBar, "Range Selector", "Use this seekbar to select the range of colors to filter.")
+                                .outerCircleColor(R.color.blue_200) // Custom color for this target
+                                .outerCircleAlpha(0.96f)
+                                .transparentTarget(true)
+                                .targetRadius(50)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+                        // Highlight the test button
+                        TapTarget.forView(testButton, "Back Button", "This button navigates back to the main activity.")
+                                .outerCircleColor(R.color.red_200) // Custom color for this target
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true)
+                )
+                .listener(new TapTargetSequence.Listener() {
+                    @Override
+                    public void onSequenceFinish() {
+                        // Tutorial finished
+                    }
+
+                    @Override
+                    public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+                        // Each step of the tutorial
+                    }
+
+                    @Override
+                    public void onSequenceCanceled(TapTarget lastTarget) {
+                        // Tutorial canceled
+                    }
+                })
+                .start();
     }
 
 

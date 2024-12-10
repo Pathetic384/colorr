@@ -50,6 +50,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.colorr.databinding.ActivityMainBinding;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.rtugeek.android.colorseekbar.ColorSeekBar;
 
@@ -78,64 +80,62 @@ public class MainActivity extends AppCompatActivity {
     private ConstraintLayout navigation;
 
     private Button tritanopiaButton;
-    private boolean isTritanopiaEnabled = false;
 
-    private Button propanopiaButton;
-    private boolean isPropanopiaEnabled = false;
+
+    private Button protanopiaButton;
+
 
     private Button deuteranopiaButton;
-    private boolean isDeuteranopiaEnabled = false;
+
+    boolean pr, de, tr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-        Button protanopiaButton = findViewById(R.id.protanopiaButton);
-        Button deuteranopiaButton = findViewById(R.id.deuteranopiaButton);
+        protanopiaButton = findViewById(R.id.protanopiaButton);
+        deuteranopiaButton = findViewById(R.id.deuteranopiaButton);
         tritanopiaButton = findViewById(R.id.tritanopiaButton);
-        tritanopiaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                protanopiaButton.setSelected(false);
-                deuteranopiaButton.setSelected(false);
-                tritanopiaButton.setSelected(!isTritanopiaEnabled);
-                // Toggle Tritanopia mode
-                isTritanopiaEnabled = !isTritanopiaEnabled;
-                Log.d("TritanopiaButton", "Tritanopia mode toggled: " + isTritanopiaEnabled);
-
-                // Update the renderer with the new mode
-                if (cameraFilterRenderer != null) {
-                    //cameraFilterRenderer.setTritanopiaMode(isTritanopiaEnabled);
-                    glSurfaceView.requestRender();  // Request a render to update the display
-                    cameraFilterRenderer.setHueRange(150,300);
-                }
+        tritanopiaButton.setOnClickListener(v -> {
+            tr = !tr;
+            protanopiaButton.setSelected(false);
+            deuteranopiaButton.setSelected(false);
+            tritanopiaButton.setSelected(tr);
+            if(tr) ShaderSettings.getInstance().setShaderMode(3);
+            else ShaderSettings.getInstance().setShaderMode(0);
+            if(cameraFilterRenderer!=null) {
+                cameraFilterRenderer.show();
+                glSurfaceView.requestRender();
             }
         });
 
 
-
-
         protanopiaButton.setOnClickListener(v -> {
-          //  protanopiaButton.setSelected(!cameraFilterRenderer.isPropanopiaEnabled());
+            pr = !pr;
+            protanopiaButton.setSelected(pr);
             deuteranopiaButton.setSelected(false);
             tritanopiaButton.setSelected(false);
-          //  cameraFilterRenderer.setProtanopiaMode(!cameraFilterRenderer.isPropanopiaEnabled());
-           // cameraFilterRenderer.setDeuteranopiaMode(false); // Disable Deuteranopia if enabling Protanopia
-           // cameraFilterRenderer.setTritanopiaMode(false); // Disable Tritanopia
-            glSurfaceView.requestRender();
+            if(pr) ShaderSettings.getInstance().setShaderMode(1);
+            else ShaderSettings.getInstance().setShaderMode(0);
+            if(cameraFilterRenderer!=null) {
+                cameraFilterRenderer.show();
+                glSurfaceView.requestRender();
+            }
+
         });
 
         deuteranopiaButton.setOnClickListener(v -> {
+            de = !de;
             protanopiaButton.setSelected(false);
-          //  deuteranopiaButton.setSelected(!cameraFilterRenderer.isDeuteranopiaEnabled());
+            deuteranopiaButton.setSelected(de);
             tritanopiaButton.setSelected(false);
-           // cameraFilterRenderer.setDeuteranopiaMode(!cameraFilterRenderer.isDeuteranopiaEnabled());
-           // cameraFilterRenderer.setProtanopiaMode(false); // Disable Protanopia if enabling Deuteranopia
-           // cameraFilterRenderer.setTritanopiaMode(false); // Disable Tritanopia
-            glSurfaceView.requestRender();
+            if(de) ShaderSettings.getInstance().setShaderMode(2);
+            else ShaderSettings.getInstance().setShaderMode(0);
+            if(cameraFilterRenderer!=null) {
+                cameraFilterRenderer.show();
+                glSurfaceView.requestRender();
+            }
         });
 
 
@@ -167,32 +167,32 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Check and request overlay permission
-        if (Settings.canDrawOverlays(this)) {
-            startOverlayService();
-        } else {
-            requestOverlayPermission();
-        }
+//        if (Settings.canDrawOverlays(this)) {
+//            startOverlayService();
+//        } else {
+//            requestOverlayPermission();
+//        }
 
-        ToggleButton toggleOverlay = findViewById(R.id.toggleOverlay);
-        toggleOverlay.setChecked(false);  // Ensure it starts in the off state
-        toggleOverlay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                overlayEnabled = isChecked;
-                if (overlayEnabled) {
-                    if (Settings.canDrawOverlays(MainActivity.this)) {
-                        startOverlayService();  // Start overlay if permission is granted
-                    } else {
-                        requestOverlayPermission();  // Request permission if not granted
-                        toggleOverlay.setChecked(false);  // Reset toggle if permission is not granted
-                    }
-                } else {
-                    if (overlayRunning) {
-                        stopOverlayService();  // Stop overlay if it was running
-                    }
-                }
-            }
-        });
+//        ToggleButton toggleOverlay = findViewById(R.id.toggleOverlay);
+//        toggleOverlay.setChecked(false);  // Ensure it starts in the off state
+//        toggleOverlay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                overlayEnabled = isChecked;
+//                if (overlayEnabled) {
+//                    if (Settings.canDrawOverlays(MainActivity.this)) {
+//                        startOverlayService();  // Start overlay if permission is granted
+//                    } else {
+//                        requestOverlayPermission();  // Request permission if not granted
+//                        toggleOverlay.setChecked(false);  // Reset toggle if permission is not granted
+//                    }
+//                } else {
+//                    if (overlayRunning) {
+//                        stopOverlayService();  // Stop overlay if it was running
+//                    }
+//                }
+//            }
+//        });
 
 
         // Initialize GLSurfaceView and set renderer
@@ -224,123 +224,206 @@ public class MainActivity extends AppCompatActivity {
         glSurfaceView.setZOrderMediaOverlay(true);
         centerPlus.setX(glSurfaceView.getWidth() / 2f - centerPlus.getWidth() / 2f);
         centerPlus.setY(glSurfaceView.getHeight() / 2f - centerPlus.getHeight() / 2f);
+
+        TextView tv = findViewById(R.id.textView);
+        Button startTutorialButton = findViewById(R.id.tutorial);
+        startTutorialButton.setOnClickListener(v -> startTutorial(centerPlus, tv, protanopiaButton, deuteranopiaButton, tritanopiaButton, filter, mimic, test));
+    }
+
+    private void startTutorial(View center, View tv, View protanopia, View deuteranopia, View tritanopia, View filter, View mimic, View test) {
+        new TapTargetSequence(this)
+                .targets(
+                        TapTarget.forView(center, "Center color", "The app will detect color at the center of the screen...")
+                                .outerCircleColor(R.color.kkk)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+                        TapTarget.forView(tv, "Color name", "...and then display the color's name!")
+                                .outerCircleColor(R.color.kkk)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+                        TapTarget.forView(protanopia, "Protanopia Filter", "This button applies the protanopia filter.")
+                                .outerCircleColor(R.color.kkk)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+                        TapTarget.forView(deuteranopia, "Deuteranopia Filter", "This button applies the deuteranopia filter.")
+                                .outerCircleColor(R.color.kkk)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+                        TapTarget.forView(tritanopia, "Tritanopia Filter", "This button applies the tritanopia filter.")
+                                .outerCircleColor(R.color.kkk)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+                        TapTarget.forView(filter, "Filter Button", "Navigate to the filter options.")
+                                .outerCircleColor(R.color.kkk)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+                        TapTarget.forView(mimic, "Mimic Button", "Navigate to the colorblindness simulation activity.")
+                                .outerCircleColor(R.color.kkk)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+                        TapTarget.forView(test, "Test Button", "Navigate to the colorblind test.")
+                                .outerCircleColor(R.color.kkk)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true)
+                )
+                .listener(new TapTargetSequence.Listener() {
+                    @Override
+                    public void onSequenceFinish() {
+                        // Tutorial finished
+                    }
+
+                    @Override
+                    public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+                        // Each step of the tutorial
+                    }
+
+                    @Override
+                    public void onSequenceCanceled(TapTarget lastTarget) {
+                        // Tutorial canceled
+                    }
+                })
+                .start();
     }
 
 
-    private void checkOverlayPermission() {
-        if (Settings.canDrawOverlays(this)) {
-            if (overlayEnabled && !overlayRunning) {
-                startOverlayService();
-            }
-        } else {
-            requestOverlayPermission();
-        }
-    }
-
-    private void requestOverlayPermission() {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + getPackageName()));
-        startActivityForResult(intent, REQUEST_CODE_OVERLAY_PERMISSION);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_OVERLAY_PERMISSION) {
-            if (Settings.canDrawOverlays(this) && overlayEnabled && !overlayRunning) {
-                startOverlayService();
-            }
-        }
-    }
-
-    private void startOverlayService() {
-        Intent serviceIntent = new Intent(this, OverlayService.class);
-        startService(serviceIntent);
-        overlayRunning = true;
-    }
-
-    private void stopOverlayService() {
-        Intent serviceIntent = new Intent(this, OverlayService.class);
-        stopService(serviceIntent);
-        overlayRunning = false;
-    }
-
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        if (!isSwitchingActivities && overlayEnabled && !overlayRunning) {
-            checkOverlayPermission();  // Start overlay if leaving the app and overlay is enabled
-        }
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stopOverlayService();  // Ensure the overlay stops when the app is destroyed
-    }
-
-    private Handler resumeHandler = new Handler();
-    private Runnable resumeRunnable = this::initializeGLSurfaceView;
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        // Detach GLSurfaceView and release resources
-        if (glSurfaceView != null) {
-            glSurfaceView.onPause();
-            ((ViewGroup) glSurfaceView.getParent()).removeView(glSurfaceView);
-            glSurfaceView = null;
-        }
-
-//        // Cancel any pending reinitialization tasks
-//        resumeHandler.removeCallbacks(resumeRunnable);
-//        stopOverlayService();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        isSwitchingActivities = false;
-        if (overlayRunning) {
-            stopOverlayService();  // Stop overlay when returning to the app
-        }
-        // Delay GLSurfaceView reinitialization to allow time for resources to be cleaned up
-        resumeHandler.postDelayed(resumeRunnable, 300); // Adjust delay if necessary
-        if (glSurfaceView != null) {
-            glSurfaceView.requestRender();
-        }
-    }
-
-    private void initializeGLSurfaceView() {
-        if (glSurfaceView == null) {
-            // Create a new instance of GLSurfaceView only if it does not already exist
-            glSurfaceView = new GLSurfaceView(this);
-            glSurfaceView.setZOrderOnTop(true);
-            glSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-            glSurfaceView.setEGLContextClientVersion(2);
-            glSurfaceView.setPreserveEGLContextOnPause(true);
-            glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-
-            // Set the renderer only once
-            cameraFilterRenderer = new CameraFilterRenderer();
-            glSurfaceView.setRenderer(cameraFilterRenderer);
-            glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-
-            //ViewGroup rootView = findViewById(R.id.root);
-            //rootView.addView(glSurfaceView);
-            glSurfaceView.onResume();  // Resume GLSurfaceView
-        } else {
-            // Only resume and request render if GLSurfaceView already exists
-            glSurfaceView.onResume();
-            glSurfaceView.requestRender();
-        }
-        centerPlus.bringToFront();
-        glSurfaceView.setZOrderMediaOverlay(true);
-        // Restart CameraX if necessary
-        startCameraX();
-    }
+//    private void checkOverlayPermission() {
+//        if (Settings.canDrawOverlays(this)) {
+//            if (overlayEnabled && !overlayRunning) {
+//                startOverlayService();
+//            }
+//        } else {
+//            requestOverlayPermission();
+//        }
+//    }
+//
+//    private void requestOverlayPermission() {
+//        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+//                Uri.parse("package:" + getPackageName()));
+//        startActivityForResult(intent, REQUEST_CODE_OVERLAY_PERMISSION);
+//    }
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == REQUEST_CODE_OVERLAY_PERMISSION) {
+//            if (Settings.canDrawOverlays(this) && overlayEnabled && !overlayRunning) {
+//                startOverlayService();
+//            }
+//        }
+//    }
+//
+//    private void startOverlayService() {
+//        Intent serviceIntent = new Intent(this, OverlayService.class);
+//        startService(serviceIntent);
+//        overlayRunning = true;
+//    }
+//
+//    private void stopOverlayService() {
+//        Intent serviceIntent = new Intent(this, OverlayService.class);
+//        stopService(serviceIntent);
+//        overlayRunning = false;
+//    }
+//
+//    @Override
+//    protected void onUserLeaveHint() {
+//        super.onUserLeaveHint();
+//        if (!isSwitchingActivities && overlayEnabled && !overlayRunning) {
+//            checkOverlayPermission();  // Start overlay if leaving the app and overlay is enabled
+//        }
+//    }
+//
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        stopOverlayService();  // Ensure the overlay stops when the app is destroyed
+//    }
+//
+//    private Handler resumeHandler = new Handler();
+//    private Runnable resumeRunnable = this::initializeGLSurfaceView;
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//
+//        // Detach GLSurfaceView and release resources
+//        if (glSurfaceView != null) {
+//            glSurfaceView.onPause();
+//            ((ViewGroup) glSurfaceView.getParent()).removeView(glSurfaceView);
+//            glSurfaceView = null;
+//        }
+//
+////        // Cancel any pending reinitialization tasks
+////        resumeHandler.removeCallbacks(resumeRunnable);
+////        stopOverlayService();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        isSwitchingActivities = false;
+//        if (overlayRunning) {
+//            stopOverlayService();  // Stop overlay when returning to the app
+//        }
+//        // Delay GLSurfaceView reinitialization to allow time for resources to be cleaned up
+//        resumeHandler.postDelayed(resumeRunnable, 300); // Adjust delay if necessary
+//        if (glSurfaceView != null) {
+//            glSurfaceView.requestRender();
+//        }
+//    }
+//
+//    private void initializeGLSurfaceView() {
+//        if (glSurfaceView == null) {
+//            // Create a new instance of GLSurfaceView only if it does not already exist
+//            glSurfaceView = new GLSurfaceView(this);
+//            glSurfaceView.setZOrderOnTop(true);
+//            glSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+//            glSurfaceView.setEGLContextClientVersion(2);
+//            glSurfaceView.setPreserveEGLContextOnPause(true);
+//            glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+//
+//            // Set the renderer only once
+//            cameraFilterRenderer = new CameraFilterRenderer();
+//            glSurfaceView.setRenderer(cameraFilterRenderer);
+//            glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+//
+//            //ViewGroup rootView = findViewById(R.id.root);
+//            //rootView.addView(glSurfaceView);
+//            glSurfaceView.onResume();  // Resume GLSurfaceView
+//        } else {
+//            // Only resume and request render if GLSurfaceView already exists
+//            glSurfaceView.onResume();
+//            glSurfaceView.requestRender();
+//        }
+//        centerPlus.bringToFront();
+//        glSurfaceView.setZOrderMediaOverlay(true);
+//        // Restart CameraX if necessary
+//        startCameraX();
+//    }
 
 
 

@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -15,6 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,13 +73,81 @@ public class TestView extends AppCompatActivity {
         vague_tritan = new ArrayList<>(Arrays.asList("p18", "p19", "p20", "p21", "p22"));
         clear_tritan = new ArrayList<>(Arrays.asList("p24", "p25"));
 
+        View rootView = findViewById(android.R.id.content);
+
+        Button startTutorialButton = findViewById(R.id.tutorial);
+        startTutorialButton.setOnClickListener(v -> startTutorial(rootView, image, box, enter, back));
+    }
+
+    private void startTutorial(View rootView, View imageView, View box, View enterButton, View backButton) {
+        new TapTargetSequence(this)
+                .targets(
+                        // First: Highlight the whole screen and introduce the activity
+
+                        // Second: Highlight the image for testing colorblindness
+                        TapTarget.forView(imageView, "Test Image", "This image is an Ishihara plate for testing color blindness. Observe the number visible in the image.")
+                                .outerCircleColor(R.color.blue_200) // Custom color for this target
+                                .outerCircleAlpha(0.96f)
+                                .transparentTarget(true)
+                                .targetRadius(140)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+
+                        // Third: Highlight the EditText (box) for number entry
+                        TapTarget.forView(box, "Enter the Number", "Input the number you see in the Ishihara plate into this box.")
+                                .outerCircleColor(R.color.green_200) // Custom color for this target
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .transparentTarget(true)
+                                .targetRadius(80)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+
+                        // Fourth: Highlight the enter button
+                        TapTarget.forView(enterButton, "Next Picture", "Click this button to proceed to the next Ishihara plate. At the end, you will see your result.")
+                                .outerCircleColor(R.color.purple_200) // Custom color for this target
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true),
+
+                        // Fifth: Highlight the back button
+                        TapTarget.forView(backButton, "Back to Main Menu", "Click this button to return to the main activity at any time.")
+                                .outerCircleColor(R.color.red_200) // Custom color for this target
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(android.R.color.white)
+                                .titleTextSize(20)
+                                .descriptionTextSize(16)
+                                .cancelable(true)
+                )
+                .listener(new TapTargetSequence.Listener() {
+                    @Override
+                    public void onSequenceFinish() {
+                        // Tutorial finished
+                    }
+
+                    @Override
+                    public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+                        // Each step of the tutorial
+                    }
+
+                    @Override
+                    public void onSequenceCanceled(TapTarget lastTarget) {
+                        // Tutorial canceled
+                    }
+                })
+                .start();
     }
 
 
+
     void switchTest() {
-        Toast.makeText(this, "total=" + total  + "both=" + both + " red="
-                + red + " green=" + green
-                + "error=" + error +  " tri=" + tri, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "total=" + total  + "both=" + both + " red="
+//                + red + " green=" + green
+//                + "error=" + error +  " tri=" + tri, Toast.LENGTH_SHORT).show();
 
         box.setText("");
         box.setHint("Enter number");

@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation ("com.getkeepsafe.taptargetview:taptargetview:1.13.3")
     implementation ("com.github.Mirkoddd:Range-SeekBar:1.1.0")
     implementation("com.github.rtugeek:colorseekbar:1.7.7")
     implementation(libs.appcompat)

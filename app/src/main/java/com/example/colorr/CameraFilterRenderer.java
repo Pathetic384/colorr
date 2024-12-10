@@ -1,14 +1,11 @@
 package com.example.colorr;
 
-import android.content.Context;
+import com.example.colorr.ShaderSettings;
+
 import android.graphics.Bitmap;
-import android.graphics.SurfaceTexture;
-import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
-import android.util.AttributeSet;
-import android.view.Surface;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -18,11 +15,12 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class CameraFilterRenderer implements GLSurfaceView.Renderer {
+    private boolean shaderNeedsReload = false;
 
     private int shaderProgram = 0;
     private int textureId = 0;
     private Bitmap cameraFrame;
-    private boolean textureLoaded = false;  // Flag to track texture loading
+    private boolean textureLoaded = false;
     private float minHue = 0.0f;
     private float maxHue = 360.0f;
 
@@ -66,7 +64,9 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         if (!isInitialized) {
-            shaderProgram = createShaderProgram(vertexShaderCode, fragmentShaderCode);
+
+            reloadShader();
+
             GLES20.glUseProgram(shaderProgram);
 
             int[] textures = new int[1];
@@ -93,6 +93,26 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
         }
     }
 
+    private void reloadShader() {
+        if (shaderProgram != 0) {
+            GLES20.glDeleteProgram(shaderProgram);
+        }
+        int mode = ShaderSettings.getInstance().getShaderMode();
+
+        if (mode == 1) {
+            shaderProgram = createShaderProgram(vertexShaderCode, fragmentShaderCode1);
+        } else if (mode == 2) {
+            shaderProgram = createShaderProgram(vertexShaderCode, fragmentShaderCode2);
+        } else if(mode == 3) {
+            shaderProgram = createShaderProgram(vertexShaderCode, fragmentShaderCode3);
+        } else {
+            shaderProgram = createShaderProgram(vertexShaderCode, fragmentShaderCode);
+        }
+
+
+        GLES20.glUseProgram(shaderProgram); // Important: Use the new program
+    }
+
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
@@ -100,6 +120,12 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
+
+        if(shaderNeedsReload) {
+            reloadShader();
+            shaderNeedsReload = false;
+        }
+
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         GLES20.glUseProgram(shaderProgram);
@@ -126,6 +152,10 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
         GLES20.glDisableVertexAttribArray(texCoordHandle);
     }
 
+
+    public void show() {
+        shaderNeedsReload = true; // Signal for shader reload
+    }
 
     public void release() {
         if (isInitialized) {
@@ -163,6 +193,8 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
                     "  vTexCoord = texCoord;" +
                     "}";
 
+
+    //Protanopia
     private final String fragmentShaderCode1 =
             "precision mediump float;" +
                     "uniform sampler2D texture;" +
@@ -235,6 +267,7 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
                     "  gl_FragColor = vec4(newR + m, newG + m, newB + m, color.a);" +
                     "}";
 
+    //Deuteranopia
     private final String fragmentShaderCode2 =
             "precision mediump float;" +
                     "uniform sampler2D texture;" +
@@ -302,7 +335,8 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
                     "}";
 
 
-    private final String fragmentShaderCode =
+    //Tritanopia
+    private final String fragmentShaderCode3 =
             "precision mediump float;" +
                     "uniform sampler2D texture;" +
                     "varying vec2 vTexCoord;" +
@@ -362,4 +396,17 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
                     "  gl_FragColor = vec4(newR + m, newG + m, newB + m, color.a);" +
                     "}";
 
+
+    private final String fragmentShaderCode =
+            "precision mediump float;" +
+                    "uniform sampler2D texture;" +
+                    "varying vec2 vTexCoord;" +
+                    "uniform float minHue;" +
+                    "uniform float maxHue;" +
+                    "void main() {" +
+                    "  vec4 color = texture2D(texture, vTexCoord);" +
+
+                    "    gl_FragColor = color;" +
+
+                    "}";
 }
