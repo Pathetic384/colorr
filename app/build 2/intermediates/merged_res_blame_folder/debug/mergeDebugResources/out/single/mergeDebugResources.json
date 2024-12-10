@@ -1,0 +1,250 @@
+[
+    {
+        "merged": "com.example.colorr.app-debug-40:/layout_activity_main.xml.flat",
+        "source": "com.example.colorr.app-main-42:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_simulation_24px.xml.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/simulation_24px.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.colorr.app-main-42:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p15.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p15.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.colorr.app-main-42:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.example.colorr.app-main-42:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p19.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p19.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/font_inter_bold.xml.flat",
+        "source": "com.example.colorr.app-main-42:/font/inter_bold.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_quiz_24px.xml.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/quiz_24px.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_baseline_arrow_forward_ios_24.xml.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/baseline_arrow_forward_ios_24.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.example.colorr.app-main-42:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p12.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p12.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_filter_alt_24px.xml.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/filter_alt_24px.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p23.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p23.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p4.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p4.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p20.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p20.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p5.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p5.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_circle_default.xml.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/circle_default.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_baseline_arrow_back_ios_24.xml.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/baseline_arrow_back_ios_24.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/layout_activity_main2.xml.flat",
+        "source": "com.example.colorr.app-main-42:/layout/activity_main2.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_face.jpg.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/face.jpg"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p18.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p18.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/xml_backup_rules.xml.flat",
+        "source": "com.example.colorr.app-main-42:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p14.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p14.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p11.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p11.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p1.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p1.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p24.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p24.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.example.colorr.app-main-42:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p8.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p8.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.example.colorr.app-main-42:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p21.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p21.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_mybutton.xml.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/mybutton.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.colorr.app-main-42:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/layout_activity_color_blindness.xml.flat",
+        "source": "com.example.colorr.app-main-42:/layout/activity_color_blindness.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.example.colorr.app-main-42:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p13.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p13.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.example.colorr.app-main-42:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p6.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p6.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p25.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p25.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.colorr.app-main-42:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_button_selector.xml.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/button_selector.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_hsv.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/hsv.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p2.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p2.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/xml_data_extraction_rules.xml.flat",
+        "source": "com.example.colorr.app-main-42:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_baseline_arrow_forward_24.xml.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/baseline_arrow_forward_24.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/xml_colors.xml.flat",
+        "source": "com.example.colorr.app-main-42:/xml/colors.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p17.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p17.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_circle_selected.xml.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/circle_selected.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p10.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p10.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p9.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p9.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/font_inter_medium.xml.flat",
+        "source": "com.example.colorr.app-main-42:/font/inter_medium.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p7.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p7.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/font_inter.ttf.flat",
+        "source": "com.example.colorr.app-main-42:/font/inter.ttf"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p22.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p22.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/font_inter_thin.ttf.flat",
+        "source": "com.example.colorr.app-main-42:/font/inter_thin.ttf"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.colorr.app-main-42:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.example.colorr.app-main-42:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p16.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p16.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/drawable_p3.png.flat",
+        "source": "com.example.colorr.app-main-42:/drawable/p3.png"
+    },
+    {
+        "merged": "com.example.colorr.app-debug-40:/layout_activity_test_view.xml.flat",
+        "source": "com.example.colorr.app-main-42:/layout/activity_test_view.xml"
+    }
+]

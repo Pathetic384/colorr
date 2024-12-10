@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.example.colorr.app-mergeDebugResources-38:/values-port/values-port.xml",
+            "map": [
+                {
+                    "source": "/Users/phamngocthachha/.gradle/caches/transforms-4/032628fd730f544b27286712746056c6/transformed/appcompat-1.6.1/res/values-port/values-port.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "55",
+                        "endOffsets": "106"
+                    }
+                }
+            ]
+        }
+    ]
+}

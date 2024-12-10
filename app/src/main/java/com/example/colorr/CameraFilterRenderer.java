@@ -1,54 +1,33 @@
 package com.example.colorr;
 
+import com.example.colorr.ShaderSettings;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.SurfaceTexture;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
-import android.util.Log;
-
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-
 public class CameraFilterRenderer implements GLSurfaceView.Renderer {
+    private boolean shaderNeedsReload = false;
 
-
-    private Context context;
-    private int shaderProgram;
-    private SurfaceTexture surfaceTexture;
+    private int shaderProgram = 0;
     private int textureId = 0;
     private Bitmap cameraFrame;
+    private boolean textureLoaded = false;
+    private float minHue = 0.0f;
+    private float maxHue = 360.0f;
 
-
-    public CameraFilterRenderer(Context context) {
-        this.context = context;
-    }
-
-
-    public SurfaceTexture getSurfaceTexture() {
-        return surfaceTexture;
-    }
-    private boolean isTritanopiaEnabled = false;
-
-
-    private boolean isDeuteranopiaEnabled = false;
-
-
-    private boolean isPropanopiaEnabled = false;
-
+    private boolean isInitialized = false;
 
     private FloatBuffer vertexBuffer;
     private FloatBuffer texCoordBuffer;
-
 
     private final float[] squareCoords = {
             -1.0f,  1.0f,   // Top left
@@ -56,7 +35,6 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
             1.0f,  1.0f,   // Top right
             1.0f, -1.0f    // Bottom right
     };
-
 
     private final float[] texCoords = {
             0.0f, 0.0f,     // Top left
@@ -66,121 +44,17 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
     };
 
 
-    private final float[] rgbToLmsMatrix = {
-            17.8824f, 43.5161f, 4.11935f,
-            3.45565f, 27.1554f, 3.86714f,
-            0.0299566f, 0.184309f, 1.467f
-    };
 
-
-    private final float[] lmsToRgbMatrix = {
-            0.0809444479f, -0.130504409f, 0.116721066f,
-            0.113614708f, -0.0102485335f, -0.0540193266f,
-            -0.000365296938f, -0.00412161469f, 0.693511405f
-    };
-
-
-    // Protanopia deficiency matrix
-    private final float[] protanopiaMatrix = {
-            0.0f, 2.02344f, -2.52581f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 1.0f
-    };
-
-
-    // Deuteranopia deficiency matrix
-    private final float[] deuteranopiaMatrix = {
-            1.0f, 0.0f, 0.0f,
-            0.494207f, 0.0f, 1.24827f,
-            0.0f, 0.0f, 1.0f
-    };
-
-
-    // Tritanopia deficiency matrix
-    private final float[] tritanopiaMatrix = {
-            1.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            -0.395913f, 0.801109f, 0.0f
-    };
-
-
-    // Define error shift matrices for each deficiency type
-    private final float[] protanopiaErrorShiftMatrix = {
-            0.0f, 0.0f, 0.0f,
-            0.7f, 1.0f, 0.0f,
-            0.7f, 0.0f, 1.0f
-    };
-
-
-    private final float[] deuteranopiaErrorShiftMatrix = {
-            1.0f, 0.7f, 0.0f,
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.7f, 1.0f
-    };
-
-
-    private final float[] tritanopiaErrorShiftMatrix = {
-            1.0f, 0.0f, 0.7f,
-            0.0f, 1.0f, 0.7f,
-            0.0f, 0.0f, 0.0f
-    };
-
-
-
-
-    public boolean isPropanopiaEnabled() {
-        return isPropanopiaEnabled;
+    public void setHueRange(float minHue, float maxHue) {
+        this.minHue = minHue;
+        this.maxHue = maxHue;
     }
-
-
-    public boolean isDeuteranopiaEnabled() {
-        return isDeuteranopiaEnabled;
-    }
-
-    public boolean isTritanopiaEnabled() {
-        return isTritanopiaEnabled;
-    }
-
-    public CameraFilterRenderer() {
-
-
-        // Initialize buffers
-        vertexBuffer = ByteBuffer.allocateDirect(squareCoords.length * 4)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        vertexBuffer.put(squareCoords).position(0);
-
-
-        texCoordBuffer = ByteBuffer.allocateDirect(texCoords.length * 4)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        texCoordBuffer.put(texCoords).position(0);
-    }
-
-
-    public void setTritanopiaMode(boolean enabled) {
-        this.isTritanopiaEnabled = enabled;
-        Log.d("CameraFilterRenderer", "Tritanopia mode set to: " + enabled);
-    }
-
-
-    public void setDeuteranopiaMode(boolean enabled) {
-        this.isDeuteranopiaEnabled = enabled;
-        Log.d("CameraFilterRenderer", "Deuteranopia mode set to: " + enabled);
-    }
-
-
-    public void setProtanopiaMode(boolean enabled) {
-        this.isPropanopiaEnabled = enabled;
-        Log.d("CameraFilterRenderer", "Protanopia mode set to: " + enabled);
-
-
-    }
-
 
     public void setCameraFrame(Bitmap frame, GLSurfaceView glSurfaceView) {
-        if (cameraFrame != null) {
-            cameraFrame.recycle();
-        }
         this.cameraFrame = frame;
+        textureLoaded = false;
+
+        // Request render only after setting a new frame
         if (glSurfaceView != null) {
             glSurfaceView.requestRender();
         }
@@ -189,291 +63,346 @@ public class CameraFilterRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        // Compile and link shaders
-        shaderProgram = createShaderProgram(getVertexShaderCode(), getFragmentShaderCode());
+        if (!isInitialized) {
 
+            reloadShader();
 
-        // Use the shader program before setting uniforms
-        GLES20.glUseProgram(shaderProgram);
+            GLES20.glUseProgram(shaderProgram);
 
+            int[] textures = new int[1];
+            GLES20.glGenTextures(1, textures, 0);
+            textureId = textures[0];
 
-        // Assign the sampler to texture unit 0
-        int textureUniform = GLES20.glGetUniformLocation(shaderProgram, "texture");
-        GLES20.glUniform1i(textureUniform, 0); // GL_TEXTURE0
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
 
+            // Prepare position and texture coordinate buffers only once
+            vertexBuffer = ByteBuffer.allocateDirect(squareCoords.length * 4)
+                    .order(ByteOrder.nativeOrder())
+                    .asFloatBuffer();
+            vertexBuffer.put(squareCoords).position(0);
 
-        // Generate and configure texture
-        int[] textures = new int[1];
-        GLES20.glGenTextures(1, textures, 0);
-        textureId = textures[0];
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+            texCoordBuffer = ByteBuffer.allocateDirect(texCoords.length * 4)
+                    .order(ByteOrder.nativeOrder())
+                    .asFloatBuffer();
+            texCoordBuffer.put(texCoords).position(0);
+
+            textureLoaded = false;  // Ensure texture reload on surface recreation
+            isInitialized = true;
+        }
     }
 
+    private void reloadShader() {
+        if (shaderProgram != 0) {
+            GLES20.glDeleteProgram(shaderProgram);
+        }
+        int mode = ShaderSettings.getInstance().getShaderMode();
+
+        if (mode == 1) {
+            shaderProgram = createShaderProgram(vertexShaderCode, fragmentShaderCode1);
+        } else if (mode == 2) {
+            shaderProgram = createShaderProgram(vertexShaderCode, fragmentShaderCode2);
+        } else if(mode == 3) {
+            shaderProgram = createShaderProgram(vertexShaderCode, fragmentShaderCode);
+
+            shaderProgram = createShaderProgram(vertexShaderCode, fragmentShaderCode);
+        }
+
+
+        GLES20.glUseProgram(shaderProgram); // Important: Use the new program
+
+        //If you have uniforms for the hue range, set them here after creating the program.
+        int hueStartLocation = GLES20.glGetUniformLocation(shaderProgram, "uHueStart");
+        int hueEndLocation = GLES20.glGetUniformLocation(shaderProgram, "uHueEnd");
+
+        GLES20.glUniform1f(hueStartLocation, ShaderSettings.getInstance().getHueStart() / 360f);
+        GLES20.glUniform1f(hueEndLocation, ShaderSettings.getInstance().getHueEnd()/ 360f);
+    }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
     }
 
-
     @Override
     public void onDrawFrame(GL10 gl) {
+
+        if(shaderNeedsReload) {
+            reloadShader();
+            shaderNeedsReload = false;
+        }
+
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
         GLES20.glUseProgram(shaderProgram);
+        GLES20.glUniform1f(GLES20.glGetUniformLocation(shaderProgram, "minHue"), minHue);
+        GLES20.glUniform1f(GLES20.glGetUniformLocation(shaderProgram, "maxHue"), maxHue);
 
-
-        // Pass vertex data
         int positionHandle = GLES20.glGetAttribLocation(shaderProgram, "position");
         GLES20.glEnableVertexAttribArray(positionHandle);
         GLES20.glVertexAttribPointer(positionHandle, 2, GLES20.GL_FLOAT, false, 0, vertexBuffer);
 
-
-        // Pass texture coordinate data
         int texCoordHandle = GLES20.glGetAttribLocation(shaderProgram, "texCoord");
         GLES20.glEnableVertexAttribArray(texCoordHandle);
         GLES20.glVertexAttribPointer(texCoordHandle, 2, GLES20.GL_FLOAT, false, 0, texCoordBuffer);
 
-
-        // Activate texture unit 0 and bind the texture
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-        if (cameraFrame != null) {
+        if (cameraFrame != null && !textureLoaded) {
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, cameraFrame, 0);
-            cameraFrame.recycle();
-            cameraFrame = null;
+            textureLoaded = true;
         }
 
-
-        // Pass the mode uniforms for Tritanopia, Protanopia, and Deuteranopia
-        setUniform(shaderProgram, "isTritanopiaMode", isTritanopiaEnabled ? 1 : 0);
-        setUniform(shaderProgram, "isProtanopiaMode", isPropanopiaEnabled ? 1 : 0);
-        setUniform(shaderProgram, "isDeuteranopiaMode", isDeuteranopiaEnabled ? 1 : 0);
-
-
-        // Pass the correct color matrix based on the selected mode
-        int colorMatrixLocation = GLES20.glGetUniformLocation(shaderProgram, "colorMatrix");
-        if (colorMatrixLocation >= 0) {
-            if (isTritanopiaEnabled) {
-                GLES20.glUniformMatrix3fv(colorMatrixLocation, 1, false, tritanopiaMatrix, 0);
-                Log.d("CameraFilterRenderer", "Applying Tritanopia matrix");
-            } else if (isPropanopiaEnabled) {
-                GLES20.glUniformMatrix3fv(colorMatrixLocation, 1, false, protanopiaMatrix, 0);
-                Log.d("CameraFilterRenderer", "Applying Protanopia matrix");
-            } else if (isDeuteranopiaEnabled) {
-                GLES20.glUniformMatrix3fv(colorMatrixLocation, 1, false, deuteranopiaMatrix, 0);
-                Log.d("CameraFilterRenderer", "Applying Deuteranopia matrix");
-            } else {
-                GLES20.glUniformMatrix3fv(colorMatrixLocation, 1, false, new float[9], 0); // No change for normal vision
-            }
-        }
-
-
-        // Draw the quad
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
 
-
-        // Cleanup
         GLES20.glDisableVertexAttribArray(positionHandle);
         GLES20.glDisableVertexAttribArray(texCoordHandle);
     }
 
 
-    /**
-     * Utility function to set integer uniforms
-     */
-    private void setUniform(int program, String name, int value) {
-        int location = GLES20.glGetUniformLocation(program, name);
-        if (location >= 0) {
-            GLES20.glUniform1i(location, value);
-            Log.d("CameraFilterRenderer", "Set uniform " + name + " to " + value);
-        } else {
-            Log.e("CameraFilterRenderer", "Error: Uniform " + name + " not found!");
+    public void setHueRange(int start, int end) {
+        ShaderSettings.getInstance().setHueStart(start);
+        ShaderSettings.getInstance().setHueEnd(end);
+        shaderNeedsReload = true; // Signal for shader reload
+    }
+
+    public void release() {
+        if (isInitialized) {
+            GLES20.glDeleteTextures(1, new int[]{textureId}, 0);
+            GLES20.glDeleteProgram(shaderProgram);
+            isInitialized = false;
         }
-    }
-
-    private String getVertexShaderCode() {
-        return "attribute vec4 position;" +
-                "attribute vec2 texCoord;" +
-                "varying vec2 vTexCoord;" +
-                "void main() {" +
-                "  gl_Position = position;" +
-                "  vTexCoord = texCoord;" +
-                "}";
-    }
-
-
-    private String getFragmentShaderCode() {
-        return "precision mediump float;\n" +
-                "uniform sampler2D texture;\n" +
-                "uniform bool isProtanopiaMode;\n" +
-                "uniform bool isDeuteranopiaMode;\n" +
-                "uniform bool isTritanopiaMode;\n" +
-                "varying vec2 vTexCoord;\n" +
-                "\n" +
-                "// Constants for sRGB to linear RGB conversion and vice versa\n" +
-                "const float epsilon = 1e-7;\n" +
-                "\n" +
-                "// Function to convert sRGB to linear RGB\n" +
-                "vec3 sRGBToLinear(vec3 srgb) {\n" +
-                "    return mix(srgb / 12.92, pow((srgb + 0.055) / 1.055, vec3(2.4)), step(0.04045, srgb));\n" +
-                "}\n" +
-                "\n" +
-                "// Function to convert linear RGB to sRGB\n" +
-                "vec3 linearToSRGB(vec3 linear) {\n" +
-                "    linear = max(linear, vec3(epsilon));\n" +
-                "    return mix(linear * 12.92, 1.055 * pow(linear, vec3(1.0 / 2.4)) - 0.055, step(0.0031308, linear));\n" +
-                "}\n" +
-                "\n" +
-                "// LMS color space matrix\n" +
-                "mat3 lmsMatrix = mat3(\n" +
-                "    17.8824, 43.5161, 4.11935,\n" +
-                "    3.45565, 27.1554, 3.86714,\n" +
-                "    0.0299566, 0.184309, 1.46709\n" +
-                ");\n" +
-                "\n" +
-                "// CVD simulation matrices (Vienot et al. 1999)\n" +
-                "mat3 protanopiaMatrix = mat3(\n" +
-                "    0, 2.02344, -2.52581,\n" +
-                "    0, 1, 0,\n" +
-                "    0, 0, 1\n" +
-                ");\n" +
-                "\n" +
-                "mat3 deuteranopiaMatrix = mat3(\n" +
-                "    1, 0, 0,\n" +
-                "    0.494207, 0, 1.24827,\n" +
-                "    0, 0, 1\n" +
-                ");\n" +
-                "\n" +
-                "mat3 tritanopiaMatrix = mat3(\n" +
-                "    1, 0, 0,\n" +
-                "    0, 1, 0,\n" +
-                "    -0.395913, 0.801109, 0\n" +
-                ");\n" +
-                "\n" +
-                "// CVD error modification matrices (adjust as needed)\n" +
-                "mat3 protanopiaErrorMatrix = mat3(\n" +
-                "    0, 0, 0,\n" +
-                "    0.7, 1, 0,\n" +
-                "    0.7, 0, 1\n" +
-                ");\n" +
-                "\n" +
-                "mat3 deuteranopiaErrorMatrix = mat3(\n" +
-                "    1, 0.7, 0,\n" +
-                "    0, 0, 0,\n" +
-                "    0, 0.7, 1\n" +
-                ");\n" +
-                "\n" +
-                "mat3 tritanopiaErrorMatrix = mat3(\n" +
-                "    1, 0, 0.7,\n" +
-                "    0, 1, 0.7,\n" +
-                "    0, 0, 0\n" +
-                ");\n" +
-                "\n" +
-                "// Function to simulate CVD\n" +
-                "vec3 simulateCVD(vec3 linearRGB, mat3 cvdMatrix) {\n" +
-                "    vec3 lms = linearRGB * lmsMatrix;\n" +
-                "    vec3 lms_cvd = lms * cvdMatrix;\n" +
-                "    vec3 linearRGB_cvd = lms_cvd * inverse(lmsMatrix);\n" +
-                "    return linearRGB_cvd;\n" +
-                "}\n" +
-                "\n" +
-                "// Function to apply Daltonization\n" +
-                "vec3 daltonize(vec3 color, bool isProtanopia, bool isDeuteranopia, bool isTritanopia) {\n" +
-                "    vec3 linearRGB = sRGBToLinear(color);\n" +
-                "\n" +
-                "    mat3 cvdMatrix;\n" +
-                "    mat3 errorMatrix;\n" +
-                "    if (isProtanopia) {\n" +
-                "        cvdMatrix = protanopiaMatrix;\n" +
-                "        errorMatrix = protanopiaErrorMatrix;\n" +
-                "    } else if (isDeuteranopia) {\n" +
-                "        cvdMatrix = deuteranopiaMatrix;\n" +
-                "        errorMatrix = deuteranopiaErrorMatrix;\n" +
-                "    } else if (isTritanopia) {\n" +
-                "        cvdMatrix = tritanopiaMatrix;\n" +
-                "        errorMatrix = tritanopiaErrorMatrix;\n" +
-                "    } else {\n" +
-                "        return color; // No CVD mode selected, return original color\n" +
-                "    }\n" +
-                "\n" +
-                "    vec3 simulatedLinearRGB = simulateCVD(linearRGB, cvdMatrix);\n" +
-                "\n" +
-                "    // Calculate error in linear RGB space\n" +
-                "    vec3 error = linearRGB - simulatedLinearRGB;\n" +
-                "\n" +
-                "    // Apply error modification\n" +
-                "    vec3 modifiedError = error * errorMatrix;\n" +
-                "\n" +
-                "    // Add modified error back to the original color\n" +
-                "    vec3 daltonizedLinearRGB = linearRGB + modifiedError;\n" +
-                "\n" +
-                "    // Convert back to sRGB\n" +
-                "    return linearToSRGB(daltonizedLinearRGB);\n" +
-                "}\n" +
-                "\n" +
-                "void main() {\n" +
-                "    vec4 originalColor = texture2D(texture, vTexCoord);\n" +
-                "    vec3 daltonizedColor = daltonize(originalColor.rgb, isProtanopiaMode, isDeuteranopiaMode, isTritanopiaMode);\n" +
-                "    gl_FragColor = vec4(daltonizedColor, originalColor.a);\n" +
-                "}\n";
     }
 
     private int createShaderProgram(String vertexCode, String fragmentCode) {
-        int vertexShader = compileShader(GLES20.GL_VERTEX_SHADER, vertexCode);
-        int fragmentShader = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentCode);
-
-
+        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexCode);
+        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentCode);
         int program = GLES20.glCreateProgram();
-        if (program == 0) {
-            Log.e("CameraFilterRenderer", "Error creating shader program");
-            return 0;
-        }
-
-
         GLES20.glAttachShader(program, vertexShader);
         GLES20.glAttachShader(program, fragmentShader);
         GLES20.glLinkProgram(program);
-
-
-        // Check link status
-        int[] linkStatus = new int[1];
-        GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
-        if (linkStatus[0] == 0) {
-            Log.e("CameraFilterRenderer", "Program link error: " + GLES20.glGetProgramInfoLog(program));
-            GLES20.glDeleteProgram(program);
-            return 0;
-        }
-
-
         return program;
     }
 
-
-    private int compileShader(int type, String shaderCode) {
+    private int loadShader(int type, String shaderCode) {
         int shader = GLES20.glCreateShader(type);
-        if (shader == 0) {
-            Log.e("CameraFilterRenderer", "Error creating shader");
-            return 0;
-        }
-
-
         GLES20.glShaderSource(shader, shaderCode);
         GLES20.glCompileShader(shader);
-
-
-        // Check compile status
-        int[] compileStatus = new int[1];
-        GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
-        if (compileStatus[0] == 0) {
-            Log.e("CameraFilterRenderer", "Shader compile error: " + GLES20.glGetShaderInfoLog(shader));
-            GLES20.glDeleteShader(shader);
-            return 0;
-        }
-
-
         return shader;
     }
-}
 
+
+
+    private final String vertexShaderCode =
+            "attribute vec4 position;" +
+                    "attribute vec2 texCoord;" +
+                    "varying vec2 vTexCoord;" +
+                    "void main() {" +
+                    "  gl_Position = position;" +
+                    "  vTexCoord = texCoord;" +
+                    "}";
+
+
+    //Protanopia
+    private final String fragmentShaderCode1 =
+            "precision mediump float;" +
+                    "uniform sampler2D texture;" +
+                    "varying vec2 vTexCoord;" +
+                    "void main() {" +
+                    "  vec4 color = texture2D(texture, vTexCoord);" +
+                    "  float r = color.r, g = color.g, b = color.b;" +
+                    "  float maxVal = max(r, max(g, b));" +
+                    "  float minVal = min(r, min(g, b));" +
+                    "  float delta = maxVal - minVal;" +
+                    "  float hue = 0.0;" +
+                    "  float saturation = 0.0;" +
+                    "  float brightness = maxVal;" +
+
+                    // Tính toán Hue và Saturation
+                    "  if (delta != 0.0) {" +
+                    "    if (maxVal == r) hue = 60.0 * mod((g - b) / delta, 6.0);" +
+                    "    else if (maxVal == g) hue = 60.0 * ((b - r) / delta + 2.0);" +
+                    "    else hue = 60.0 * ((r - g) / delta + 4.0);" +
+                    "    if (hue < 0.0) hue += 360.0;" +
+                    "    saturation = delta / maxVal;" +
+                    "  }" +
+
+                    // Quy tắc chuyển đổi Hue với chỉnh sửa thêm
+                    "  float newHue = hue;" +
+                    "  if (hue >= 0.0 && hue < 5.0) {" +
+                    "    newHue = 5.0; saturation *= 0.3; brightness *= 1.3;" + // Đỏ -> Hồng nhạt hơn nữa
+                    "  } else if (hue >= 5.0 && hue < 10.0) {" +
+                    "    newHue = 8.0; saturation *= 0.4; brightness *= 1.2;" +
+                    "  } else if (hue >= 10.0 && hue < 15.0) {" +
+                    "    newHue = 12.0; saturation *= 0.5; brightness *= 1.2;" +
+                    "  } else if (hue >= 15.0 && hue < 20.0) {" +
+                    "    newHue = 18.0; saturation *= 0.6; brightness *= 1.1;" +
+                    "  } else if (hue >= 20.0 && hue < 30.0) {" +
+                    "    newHue = 25.0; saturation *= 0.7;" +
+                    "  } else if (hue >= 30.0 && hue < 60.0) {" +
+                    "    newHue = mix(35.0, 50.0, (hue - 30.0) / 30.0); saturation *= 0.8;" +
+                    "  } else if (hue >= 60.0 && hue < 90.0) {" +
+                    "    newHue = mix(75.0, 85.0, (hue - 60.0) / 30.0); saturation *= 1.5; brightness *= 0.8;" + // Vàng -> Xanh lá sáng
+                    "  } else if (hue >= 90.0 && hue < 150.0) {" +
+                    "    newHue = mix(130.0, 140.0, (hue - 90.0) / 60.0); saturation *= 2.2; brightness *= 0.7;" + // Xanh lá -> Xanh đậm hơn
+                    "  } else if (hue >= 150.0 && hue < 180.0) {" +
+                    "    newHue = mix(170.0, 175.0, (hue - 150.0) / 30.0); saturation *= 2.0;" +
+                    "  } else if (hue >= 180.0 && hue < 240.0) {" +
+                    "    newHue = mix(210.0, 220.0, (hue - 180.0) / 60.0); brightness *= 0.75;" + // Xanh lam -> Xanh lam đậm
+                    "  } else if (hue >= 240.0 && hue < 300.0) {" +
+                    "    newHue = mix(270.0, 280.0, (hue - 240.0) / 60.0); brightness *= 0.9;" + // Tím -> Tím nhạt
+                    "  } else if (hue >= 300.0 && hue < 360.0) {" +
+                    "    newHue = mix(320.0, 330.0, (hue - 300.0) / 60.0); brightness *= 1.1;" + // Hồng -> Hồng sáng hơn
+                    "  }" +
+
+                    // Chuyển đổi từ HSL về RGB
+                    "  float c = brightness * saturation;" +
+                    "  float x = c * (1.0 - abs(mod(newHue / 60.0, 2.0) - 1.0));" +
+                    "  float m = brightness - c;" +
+                    "  float newR, newG, newB;" +
+                    "  if (newHue >= 0.0 && newHue < 60.0) {" +
+                    "    newR = c; newG = x; newB = 0.0;" +
+                    "  } else if (newHue >= 60.0 && newHue < 120.0) {" +
+                    "    newR = x; newG = c; newB = 0.0;" +
+                    "  } else if (newHue >= 120.0 && newHue < 180.0) {" +
+                    "    newR = 0.0; newG = c; newB = x;" +
+                    "  } else if (newHue >= 180.0 && newHue < 240.0) {" +
+                    "    newR = 0.0; newG = x; newB = c;" +
+                    "  } else if (newHue >= 240.0 && newHue < 300.0) {" +
+                    "    newR = x; newG = 0.0; newB = c;" +
+                    "  } else {" +
+                    "    newR = c; newG = 0.0; newB = x;" +
+                    "  }" +
+                    "  gl_FragColor = vec4(newR + m, newG + m, newB + m, color.a);" +
+                    "}";
+
+    //Deuteranopia
+    private final String fragmentShaderCode2 =
+            "precision mediump float;" +
+                    "uniform sampler2D texture;" +
+                    "varying vec2 vTexCoord;" +
+                    "void main() {" +
+                    "  vec4 color = texture2D(texture, vTexCoord);" +
+                    "  float r = color.r, g = color.g, b = color.b;" +
+                    "  float maxVal = max(r, max(g, b));" +
+                    "  float minVal = min(r, min(g, b));" +
+                    "  float delta = maxVal - minVal;" +
+                    "  float hue = 0.0;" +
+                    "  float saturation = 0.0;" +
+                    "  float brightness = maxVal;" +
+
+                    // Tính toán Hue và Saturation
+                    "  if (delta != 0.0) {" +
+                    "    if (maxVal == r) hue = 60.0 * mod((g - b) / delta, 6.0);" +
+                    "    else if (maxVal == g) hue = 60.0 * ((b - r) / delta + 2.0);" +
+                    "    else hue = 60.0 * ((r - g) / delta + 4.0);" +
+                    "    if (hue < 0.0) hue += 360.0;" +
+                    "    saturation = delta / maxVal;" +
+                    "  }" +
+
+                    // Quy tắc chuyển đổi Hue
+                    "  float newHue = hue;" +
+                    "  if (hue >= 0.0 && hue < 15.0) {" +
+                    "    newHue = 5.0; saturation *= 0.4; brightness *= 1.3;" + // Đỏ -> Hồng nhạt hơn
+                    "  } else if (hue >= 15.0 && hue < 30.0) {" +
+                    "    newHue = 20.0; saturation *= 0.5; brightness *= 1.2;" + // Cam -> Cam nhạt
+                    "  } else if (hue >= 30.0 && hue < 60.0) {" +
+                    "    newHue = mix(40.0, 50.0, (hue - 30.0) / 30.0); saturation *= 0.8;" + // Vàng -> Vàng sáng
+                    "  } else if (hue >= 60.0 && hue < 90.0) {" +
+                    "    newHue = mix(80.0, 90.0, (hue - 60.0) / 30.0); saturation *= 1.2; brightness *= 0.9;" + // Xanh lá nhạt -> Xanh sáng hơn
+                    "  } else if (hue >= 90.0 && hue < 150.0) {" +
+                    "    newHue = mix(130.0, 140.0, (hue - 90.0) / 60.0); saturation *= 2.2; brightness *= 0.7;" + // Xanh lá đậm -> Xanh đậm hơn
+                    "  } else if (hue >= 150.0 && hue < 180.0) {" +
+                    "    newHue = mix(170.0, 175.0, (hue - 150.0) / 30.0); saturation *= 2.0;" + // Cyan nhạt -> Cyan đậm
+                    "  } else if (hue >= 180.0 && hue < 240.0) {" +
+                    "    newHue = mix(210.0, 220.0, (hue - 180.0) / 60.0); brightness *= 0.75;" + // Xanh lam -> Xanh lam đậm
+                    "  } else if (hue >= 240.0 && hue < 300.0) {" +
+                    "    newHue = mix(270.0, 280.0, (hue - 240.0) / 60.0); brightness *= 0.9;" + // Tím -> Tím nhạt
+                    "  } else if (hue >= 300.0 && hue < 360.0) {" +
+                    "    newHue = mix(320.0, 330.0, (hue - 300.0) / 60.0); brightness *= 1.1;" + // Hồng -> Hồng sáng hơn
+                    "  }" +
+
+                    // Chuyển đổi từ HSL về RGB
+                    "  float c = brightness * saturation;" +
+                    "  float x = c * (1.0 - abs(mod(newHue / 60.0, 2.0) - 1.0));" +
+                    "  float m = brightness - c;" +
+                    "  float newR, newG, newB;" +
+                    "  if (newHue >= 0.0 && newHue < 60.0) {" +
+                    "    newR = c; newG = x; newB = 0.0;" +
+                    "  } else if (newHue >= 60.0 && newHue < 120.0) {" +
+                    "    newR = x; newG = c; newB = 0.0;" +
+                    "  } else if (newHue >= 120.0 && newHue < 180.0) {" +
+                    "    newR = 0.0; newG = c; newB = x;" +
+                    "  } else if (newHue >= 180.0 && newHue < 240.0) {" +
+                    "    newR = 0.0; newG = x; newB = c;" +
+                    "  } else if (newHue >= 240.0 && newHue < 300.0) {" +
+                    "    newR = x; newG = 0.0; newB = c;" +
+                    "  } else {" +
+                    "    newR = c; newG = 0.0; newB = x;" +
+                    "  }" +
+                    "  gl_FragColor = vec4(newR + m, newG + m, newB + m, color.a);" +
+                    "}";
+
+
+    //Tritanopia
+    private final String fragmentShaderCode =
+            "precision mediump float;" +
+                    "uniform sampler2D texture;" +
+                    "varying vec2 vTexCoord;" +
+                    "void main() {" +
+                    "  vec4 color = texture2D(texture, vTexCoord);" +
+                    "  float r = color.r, g = color.g, b = color.b;" +
+                    "  float maxVal = max(r, max(g, b));" +
+                    "  float minVal = min(r, min(g, b));" +
+                    "  float delta = maxVal - minVal;" +
+                    "  float hue = 0.0;" +
+                    "  float saturation = 0.0;" +
+                    "  float brightness = maxVal;" +
+
+                    // Tính toán Hue và Saturation
+                    "  if (delta != 0.0) {" +
+                    "    if (maxVal == r) hue = 60.0 * mod((g - b) / delta, 6.0);" +
+                    "    else if (maxVal == g) hue = 60.0 * ((b - r) / delta + 2.0);" +
+                    "    else hue = 60.0 * ((r - g) / delta + 4.0);" +
+                    "    if (hue < 0.0) hue += 360.0;" +
+                    "    saturation = delta / maxVal;" +
+                    "  }" +
+
+                    // Quy tắc chuyển đổi Hue
+                    "  float newHue = hue;" +
+                    "  if (hue >= 0.0 && hue < 30.0) {" +
+                    "    newHue = mix(270.0, 290.0, hue / 30.0); saturation *= 2.0; brightness *= 0.8;" + // Đỏ -> Tím đậm hơn
+                    "  } else if (hue >= 60.0 && hue < 90.0) {" +
+                    "    newHue = mix(90.0, 110.0, (hue - 60.0) / 30.0); saturation *= 1.4; brightness *= 0.9;" + // Vàng -> Xanh lá nhạt
+                    "  } else if (hue >= 90.0 && hue < 120.0) {" +
+                    "    newHue = mix(120.0, 140.0, (hue - 90.0) / 30.0); saturation *= 1.6; brightness *= 0.85;" + // Xanh biển nhạt -> Xanh lá
+                    "  } else if (hue >= 120.0 && hue < 180.0) {" +
+                    "    newHue = mix(140.0, 160.0, (hue - 120.0) / 60.0); saturation *= 1.7; brightness *= 0.8;" + // Xanh biển đậm -> Xanh lục đậm
+                    "  } else if (hue >= 240.0 && hue < 270.0) {" +
+                    "    newHue = mix(250.0, 270.0, (hue - 240.0) / 30.0); saturation *= 1.8; brightness *= 0.75;" + // Tím -> Tím đậm hơn nữa
+                    "  } else if (hue >= 270.0 && hue < 300.0) {" +
+                    "    newHue = mix(290.0, 310.0, (hue - 270.0) / 30.0); saturation *= 1.4; brightness *= 0.85;" + // Tím nhạt hơn
+                    "  }" +
+
+                    // Chuyển đổi từ HSL về RGB
+                    "  float c = brightness * saturation;" +
+                    "  float x = c * (1.0 - abs(mod(newHue / 60.0, 2.0) - 1.0));" +
+                    "  float m = brightness - c;" +
+                    "  float newR, newG, newB;" +
+                    "  if (newHue >= 0.0 && newHue < 60.0) {" +
+                    "    newR = c; newG = x; newB = 0.0;" +
+                    "  } else if (newHue >= 60.0 && newHue < 120.0) {" +
+                    "    newR = x; newG = c; newB = 0.0;" +
+                    "  } else if (newHue >= 120.0 && newHue < 180.0) {" +
+                    "    newR = 0.0; newG = c; newB = x;" +
+                    "  } else if (newHue >= 180.0 && newHue < 240.0) {" +
+                    "    newR = 0.0; newG = x; newB = c;" +
+                    "  } else if (newHue >= 240.0 && newHue < 300.0) {" +
+                    "    newR = x; newG = 0.0; newB = c;" +
+                    "  } else {" +
+                    "    newR = c; newG = 0.0; newB = x;" +
+                    "  }" +
+                    "  gl_FragColor = vec4(newR + m, newG + m, newB + m, color.a);" +
+                    "}";
+
+}

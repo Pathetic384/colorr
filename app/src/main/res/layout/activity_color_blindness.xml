@@ -110,12 +110,13 @@
             android:id="@+id/back2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="380dp"
             android:background="@null"
             android:backgroundTint="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.615"
             app:srcCompat="@drawable/baseline_arrow_back_ios_24"
             app:tint="#FFFFFF" />
     </androidx.constraintlayout.widget.ConstraintLayout>

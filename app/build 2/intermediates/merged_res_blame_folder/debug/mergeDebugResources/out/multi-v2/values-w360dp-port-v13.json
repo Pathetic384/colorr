@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.example.colorr.app-mergeDebugResources-38:/values-w360dp-port-v13/values-w360dp-port-v13.xml",
+            "map": [
+                {
+                    "source": "/Users/phamngocthachha/.gradle/caches/transforms-4/27e7338b4fed6c50ff78ec4f87e0a424/transformed/material-1.10.0/res/values-w360dp-port-v13/values-w360dp-port-v13.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,114,170,226,293,358,413,478",
+                        "endColumns": "58,55,55,66,64,54,64,68",
+                        "endOffsets": "109,165,221,288,353,408,473,542"
+                    }
+                }
+            ]
+        }
+    ]
+}
