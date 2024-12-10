@@ -99,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
         tritanopiaButton = findViewById(R.id.tritanopiaButton);
         tritanopiaButton.setOnClickListener(v -> {
             tr = !tr;
+            pr = false;
+            de = false;
             protanopiaButton.setSelected(false);
             deuteranopiaButton.setSelected(false);
             tritanopiaButton.setSelected(tr);
@@ -113,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
 
         protanopiaButton.setOnClickListener(v -> {
             pr = !pr;
+            tr = false;
+            de = false;
             protanopiaButton.setSelected(pr);
             deuteranopiaButton.setSelected(false);
             tritanopiaButton.setSelected(false);
@@ -127,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
 
         deuteranopiaButton.setOnClickListener(v -> {
             de = !de;
+            tr = false;
+            pr = false;
             protanopiaButton.setSelected(false);
             deuteranopiaButton.setSelected(de);
             tritanopiaButton.setSelected(false);
