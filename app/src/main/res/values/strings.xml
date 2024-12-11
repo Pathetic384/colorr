@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">colorr</string>
+    <string name="app_name">ColorR</string>
     <string name="r">R</string>
 
     <string-array name="color_blindness_types">
