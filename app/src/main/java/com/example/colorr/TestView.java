@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Layout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -86,6 +87,31 @@ public class TestView extends AppCompatActivity {
 
         ImageButton startTutorialButton = findViewById(R.id.tutorial);
         startTutorialButton.setOnClickListener(v -> startTutorial(rootView, image, box, enter, back));
+
+
+        int[] buttonIds = {
+                R.id.button0, R.id.button1, R.id.button2, R.id.button3, R.id.button4,
+                R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9, R.id.buttonDelete
+        };
+
+        for (int id : buttonIds) {
+            Button button = findViewById(id);
+            button.setOnClickListener(this::onButtonClick);
+        }
+    }
+
+    private void onButtonClick(View view) {
+        Button button = (Button) view;
+        String currentText = box.getText().toString();
+
+        if (button.getId() == R.id.buttonDelete) {
+            if (!TextUtils.isEmpty(currentText)) {
+               box.setText(currentText.substring(0, currentText.length() - 1));
+            }
+        } else {
+            String value = button.getText().toString();
+            box.append(value);
+        }
     }
 
     private void startTutorial(View rootView, View imageView, View box, View enterButton, View backButton) {
