@@ -91,28 +91,33 @@ public class TestView extends AppCompatActivity {
 
         int[] buttonIds = {
                 R.id.button0, R.id.button1, R.id.button2, R.id.button3, R.id.button4,
-                R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9, R.id.buttonDelete
+                R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9
         };
 
         for (int id : buttonIds) {
             Button button = findViewById(id);
             button.setOnClickListener(this::onButtonClick);
         }
+        ImageButton delete = findViewById(R.id.buttonDelete);
+        delete.setOnClickListener(this::onButtonClick);
     }
 
     private void onButtonClick(View view) {
-        Button button = (Button) view;
         String currentText = box.getText().toString();
 
-        if (button.getId() == R.id.buttonDelete) {
+        // Check if the clicked view is the delete button (ImageButton)
+        if (view.getId() == R.id.buttonDelete) {
             if (!TextUtils.isEmpty(currentText)) {
-               box.setText(currentText.substring(0, currentText.length() - 1));
+                box.setText(currentText.substring(0, currentText.length() - 1));
             }
-        } else {
+        } else if (view instanceof Button) {
+            // Handle other numeric buttons
+            Button button = (Button) view;
             String value = button.getText().toString();
             box.append(value);
         }
     }
+
 
     private void startTutorial(View rootView, View imageView, View box, View enterButton, View backButton) {
         new TapTargetSequence(this)
@@ -121,41 +126,49 @@ public class TestView extends AppCompatActivity {
 
                         // Second: Highlight the image for testing colorblindness
                         TapTarget.forView(imageView, "Test Image", "This image is an Ishihara plate for testing color blindness. Observe the number visible in the image.")
-                                .outerCircleColor(R.color.blue_200) // Custom color for this target
+                                .outerCircleColor(R.color.kkk) // Custom color for this target
                                 .outerCircleAlpha(0.96f)
                                 .transparentTarget(true)
                                 .targetRadius(140)
                                 .titleTextSize(20)
                                 .descriptionTextSize(16)
+                                .titleTextColor(android.R.color.white)
+                                .descriptionTextColor(android.R.color.white)
                                 .cancelable(true),
 
                         // Third: Highlight the EditText (box) for number entry
                         TapTarget.forView(box, "Enter the Number", "Input the number you see in the Ishihara plate into this box.")
-                                .outerCircleColor(R.color.green_200) // Custom color for this target
+                                .outerCircleColor(R.color.kkk) // Custom color for this target
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(android.R.color.white)
                                 .transparentTarget(true)
                                 .targetRadius(80)
                                 .titleTextSize(20)
                                 .descriptionTextSize(16)
+                                .titleTextColor(android.R.color.white)
+                                .descriptionTextColor(android.R.color.white)
                                 .cancelable(true),
 
                         // Fourth: Highlight the enter button
                         TapTarget.forView(enterButton, "Next Picture", "Click this button to proceed to the next Ishihara plate. At the end, you will see your result.")
-                                .outerCircleColor(R.color.purple_200) // Custom color for this target
+                                .outerCircleColor(R.color.kkk) // Custom color for this target
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(android.R.color.white)
                                 .titleTextSize(20)
                                 .descriptionTextSize(16)
+                                .titleTextColor(android.R.color.white)
+                                .descriptionTextColor(android.R.color.white)
                                 .cancelable(true),
 
                         // Fifth: Highlight the back button
                         TapTarget.forView(backButton, "Back to Main Menu", "Click this button to return to the main activity at any time.")
-                                .outerCircleColor(R.color.red_200) // Custom color for this target
+                                .outerCircleColor(R.color.kkk) // Custom color for this target
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(android.R.color.white)
                                 .titleTextSize(20)
                                 .descriptionTextSize(16)
+                                .titleTextColor(android.R.color.white)
+                                .descriptionTextColor(android.R.color.white)
                                 .cancelable(true)
                 )
                 .listener(new TapTargetSequence.Listener() {

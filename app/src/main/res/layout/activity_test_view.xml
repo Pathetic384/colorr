@@ -46,7 +46,6 @@
         android:id="@+id/box"
         android:layout_width="212dp"
         android:layout_height="52dp"
-        android:layout_marginLeft="100dp"
         android:layout_marginTop="76dp"
         android:background="@drawable/mybutton"
         android:backgroundTint="#1d1d1d"
@@ -59,84 +58,110 @@
         android:textColorHint="#FFFFFF"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.919"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <GridLayout
-        android:layout_width="185dp"
-        android:layout_height="285dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginBottom="4dp"
-        android:columnCount="2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:id="@+id/gridLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:columnCount="5"
+        android:useDefaultMargins="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/box">
 
         <Button
             android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1" />
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/number_buttons"
+            android:fontFamily="@font/inter"
+            android:text="1"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2" />
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/number_buttons"
+            android:fontFamily="@font/inter"
+            android:text="2"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3" />
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/number_buttons"
+            android:fontFamily="@font/inter"
+            android:text="3"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/button4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="4" />
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/number_buttons"
+            android:fontFamily="@font/inter"
+            android:text="4"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/button5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="5" />
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/number_buttons"
+            android:fontFamily="@font/inter"
+            android:text="5"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/button6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="6" />
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/number_buttons"
+            android:fontFamily="@font/inter"
+            android:text="6"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/button7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="7" />
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/number_buttons"
+            android:fontFamily="@font/inter"
+            android:text="7"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/button8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="8" />
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/number_buttons"
+            android:fontFamily="@font/inter"
+            android:text="8"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/button9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="9" />
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/number_buttons"
+            android:fontFamily="@font/inter"
+            android:text="9"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/button0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0" />
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/number_buttons"
+            android:fontFamily="@font/inter"
+            android:text="0"
+            android:textSize="14sp" />
 
-        <Button
-            android:id="@+id/buttonDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Xóa" />
     </GridLayout>
 
     <Button
@@ -165,11 +190,11 @@
         android:layout_marginEnd="16dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/help_24px"
-        app:tint="#FFFFFF"
         android:text="tutyorial"
         app:layout_constraintBottom_toBottomOf="@+id/back"
         app:layout_constraintEnd_toStartOf="@+id/back"
-        app:layout_constraintTop_toTopOf="@+id/back" />
+        app:layout_constraintTop_toTopOf="@+id/back"
+        app:tint="#FFFFFF" />
 
     <TextView
         android:id="@+id/textView2"
@@ -212,6 +237,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <ImageButton
+        android:id="@+id/buttonDelete"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/number_buttons"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/backspace_24px"
+        android:text="Xóa"
+        app:layout_constraintEnd_toEndOf="@+id/gridLayout"
+        app:layout_constraintTop_toBottomOf="@+id/gridLayout"
+        app:tint="#FFFFFF" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

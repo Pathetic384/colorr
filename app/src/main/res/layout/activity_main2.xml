@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/navigation"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:background="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,12 +36,12 @@
             android:id="@+id/filter"
             android:layout_width="wrap_content"
             android:layout_height="33dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginStart="16dp"
             android:fontFamily="@font/inter_bold"
             android:text="Filter"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

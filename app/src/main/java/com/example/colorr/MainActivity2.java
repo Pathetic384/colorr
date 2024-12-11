@@ -151,30 +151,36 @@ public class MainActivity2 extends AppCompatActivity {
                 .targets(
                         // Highlight the whole screen with a transparent inner circle
                         TapTarget.forView(rootView, "Color Filter Activity", "This activity lets you filter colors out of a specified range.")
-                                .outerCircleColor(R.color.teal_200) // Custom color for this target
+                                .outerCircleColor(R.color.kkk) // Custom color for this target
                                 .outerCircleAlpha(0.96f)// Inner circle is transparent
                                 .transparentTarget(true)
                                 .targetRadius(200) // Large radius to cover the whole screen
                                 .titleTextSize(20)
                                 .descriptionTextSize(16)
+                                .titleTextColor(android.R.color.white)
+                                .descriptionTextColor(android.R.color.white)
                                 .cancelable(true),
                         // Highlight the rangeSeekBar
                         TapTarget.forView(rangeSeekBar, "Range Selector", "Use this seekbar to select the range of colors to filter.")
-                                .outerCircleColor(R.color.blue_200) // Custom color for this target
+                                .outerCircleColor(R.color.kkk) // Custom color for this target
                                 .outerCircleAlpha(0.96f)
                                 .transparentTarget(true)
                                 .targetRadius(50)
                                 .targetCircleColor(android.R.color.white)
                                 .titleTextSize(20)
                                 .descriptionTextSize(16)
+                                .titleTextColor(android.R.color.white)
+                                .descriptionTextColor(android.R.color.white)
                                 .cancelable(true),
                         // Highlight the test button
                         TapTarget.forView(testButton, "Back Button", "This button navigates back to the main activity.")
-                                .outerCircleColor(R.color.red_200) // Custom color for this target
+                                .outerCircleColor(R.color.kkk) // Custom color for this target
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(android.R.color.white)
                                 .titleTextSize(20)
                                 .descriptionTextSize(16)
+                                .titleTextColor(android.R.color.white)
+                                .descriptionTextColor(android.R.color.white)
                                 .cancelable(true)
                 )
                 .listener(new TapTargetSequence.Listener() {

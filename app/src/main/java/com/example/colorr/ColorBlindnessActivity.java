@@ -145,41 +145,53 @@ public class ColorBlindnessActivity extends AppCompatActivity {
     private void startTutorial(View back, View red, View green, View blue, View normal) {
         new TapTargetSequence(this)
                 .targets(
+
                         TapTarget.forView(back, "Back Button", "This button navigates back to the main activity.")
-                                .outerCircleColor(R.color.teal_200) // Custom color for this target
+                                .outerCircleColor(R.color.kkk) // Custom color for this target
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(android.R.color.white)
                                 .titleTextSize(20)
                                 .descriptionTextSize(16)
+                                .titleTextColor(android.R.color.white)
+                                .descriptionTextColor(android.R.color.white)
                                 .cancelable(true),
-                        TapTarget.forView(red, "Red Filter", "This button applies the red filter for color adjustment.")
-                                .outerCircleColor(R.color.red_200) // Custom color for this target
+                        TapTarget.forView(normal, "Normal Colors", "Showing normal colors")
+                                .outerCircleColor(R.color.kkk) // Custom color for this target
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(android.R.color.white)
                                 .titleTextSize(20)
                                 .descriptionTextSize(16)
+                                .titleTextColor(android.R.color.white)
+                                .descriptionTextColor(android.R.color.white)
                                 .cancelable(true),
-                        TapTarget.forView(green, "Green Filter", "This button applies the green filter for color adjustment.")
-                                .outerCircleColor(R.color.green_200) // Custom color for this target
+                        TapTarget.forView(red, "Red deficiency", "Simulating red deficiency (Protanopia)")
+                                .outerCircleColor(R.color.kkk) // Custom color for this target
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(android.R.color.white)
                                 .titleTextSize(20)
                                 .descriptionTextSize(16)
+                                .titleTextColor(android.R.color.white)
+                                .descriptionTextColor(android.R.color.white)
                                 .cancelable(true),
-                        TapTarget.forView(blue, "Blue Filter", "This button applies the blue filter for color adjustment.")
-                                .outerCircleColor(R.color.blue_200) // Custom color for this target
+                        TapTarget.forView(green, "Green deficiency", "Simulating green deficiency (Deuteranopia)")
+                                .outerCircleColor(R.color.kkk) // Custom color for this target
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(android.R.color.white)
                                 .titleTextSize(20)
                                 .descriptionTextSize(16)
+                                .titleTextColor(android.R.color.white)
+                                .descriptionTextColor(android.R.color.white)
                                 .cancelable(true),
-                        TapTarget.forView(normal, "Normal View", "This button resets the filters to normal view.")
-                                .outerCircleColor(R.color.purple_200) // Custom color for this target
+                        TapTarget.forView(blue, "Blue deficiency", "Simulating blue deficiency (Tritanopia)")
+                                .outerCircleColor(R.color.kkk) // Custom color for this target
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(android.R.color.white)
                                 .titleTextSize(20)
                                 .descriptionTextSize(16)
+                                .titleTextColor(android.R.color.white)
+                                .descriptionTextColor(android.R.color.white)
                                 .cancelable(true)
+
                 )
                 .listener(new TapTargetSequence.Listener() {
                     @Override
