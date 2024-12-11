@@ -9,19 +9,13 @@ import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
-import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageProxy;
@@ -38,12 +32,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
-import android.os.Bundle;
-import android.widget.Spinner;
-import android.widget.ArrayAdapter;
 import android.view.View;
-import android.widget.AdapterView;
-import androidx.appcompat.app.AppCompatActivity;
+import android.widget.TextView;
 
 public class ColorBlindnessActivity extends AppCompatActivity {
 
@@ -56,6 +46,8 @@ public class ColorBlindnessActivity extends AppCompatActivity {
     private ConstraintLayout colorBlindnessType;
     ImageButton back;
     private Button red, green, blue, normal;
+
+    private TextView mimic;
 
     @SuppressLint("MissingInflatedId")
     @Override

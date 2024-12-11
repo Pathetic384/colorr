@@ -76,6 +76,8 @@ public class MainActivity2 extends AppCompatActivity {
     private CameraFilterRenderer2 cameraFilterRenderer;
     private ProcessCameraProvider cameraProvider;
 
+    private TextView filter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -140,6 +142,8 @@ public class MainActivity2 extends AppCompatActivity {
         startTutorialButton.setOnClickListener(v -> startTutorial(rootView, rangeSeekBar, test));
 
 
+        TextView filter = findViewById(R.id.filter);
+        filter.setText("Filter");
     }
 
     private void startTutorial(View rootView, View rangeSeekBar, View testButton) {
